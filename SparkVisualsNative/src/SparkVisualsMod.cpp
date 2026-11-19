@@ -60,6 +60,7 @@ public:
             .description("Cosmetic HUD test panel. Game data is not connected; feature toggles remain placeholders.")
             .defaultEnabled(true)
             .onToggle([this](std::string_view, bool enabled) {
+                overlayEnabled = enabled;
                 submitStatusOverlay(enabled);
             })
             .onConfigChanged([this](std::string_view, std::string_view key, std::string_view value) {
@@ -68,7 +69,7 @@ public:
                     const float scale = std::stof(std::string(value));
                     if (scale < 0.5f || scale > 2.0f) return;
                     settings.hudScale = scale;
-                    if (saveSettings()) submitStatusOverlay(true);
+                    if (saveSettings()) submitStatusOverlay(overlayEnabled);
                 } catch (...) {
                     self.getLogger().warn("SparkVisuals: invalid HUD scale setting.");
                 }
