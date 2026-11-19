@@ -1,32 +1,35 @@
-# SparkVisuals Native Client — roadmap
+# SparkVisuals native roadmap (truthful milestones)
 
-## Goal
-Develop SparkVisuals as an in-game native Bedrock Android mod/client UI, not as an Android floating overlay, Behavior Pack, or Resource Pack.
+## 0. Current state
+- Launcher app UI: prototype, source archive, previous debug build (not game-integrated).
+- Native module: lifecycle/menu entry scaffold only, not a client.
+- Pack packaging workflow: removed because user prohibits packs/add-ons.
+- Target: Android Bedrock 1.26.50.4.
 
-## Target
-- Minecraft Bedrock Android: 1.26.50.4 (user-reported; compatibility not verified)
-- Android ARM64 (device ABI must be confirmed)
-- Visual identity: black / charcoal / crimson red, based on SparkVisuals logo
+## 1. Build and source audit
+- [x] Repository tree and source archive identified.
+- [x] Android APK workflow identified (builds the launcher source extracted from ZIP).
+- [x] Native scaffold and its exact limitation audited.
+- [x] Public Android native-client ecosystem found (LeviLauncher/Preloader, BedrockTools, Xelo).
+- [x] BedrockTools MIT license verified; upstream public history documents 26.50 then 26.60 support.
+- [ ] Reproducible APK workflow run against current source and artifact verified.
+- [ ] Verify what app source archive is used and its checksum/version.
 
-## Phase 0 — feasibility and compatibility (current)
-- [ ] Verify target game's build and Android ABI on a device
-- [ ] Choose a supported native mod-loader/launcher platform and verify its licensing and version compatibility
-- [ ] Establish a reproducible Android NDK build pipeline
-- [ ] Confirm that the mod can be launched and its UI rendered in-game on the target build
+## 2. Legal/runtime feasibility
+- [ ] Check license obligations for any launcher/loader integration.
+- [ ] Determine supported custom-launcher integration path for Android Preloader.
+- [ ] Confirm exact MC 1.26.50.4 runtime support with a legitimate installation.
+- [ ] Document any runtime/module dependency clearly.
 
-## Phase 1 — minimal native in-game HUD
-- [ ] In-game module UI (black/red theme)
-- [ ] FPS display, using a reliable in-game frame timing source
-- [ ] Ping display, using a reliable connection latency source; show unavailable rather than fabricate values
-- [ ] CPS display, based on legitimate input events
-- [ ] Coordinates, only when accessible through supported mod interfaces
-- [ ] Persist module settings
+## 3. Proof of integration
+- [ ] Custom SparkVisuals APK launches owned Minecraft version.
+- [ ] Native module loads in the game runtime.
+- [ ] In-game menu opens/closes and persists config.
+- [ ] A minimal benign HUD feature works on-device.
+- [ ] Crash/compatibility test; collect logs and APK SHA.
 
-## Phase 2 — polish and additional modules
-- [ ] HUD editor and layout persistence
-- [ ] Animations, Zoom, crosshair customization
-- [ ] Target information only where exposed through legitimate interfaces
-- [ ] Compatibility testing and version checks
+## 4. Features (after integration proof)
+Prioritize HUD / UI / saved markers and noncompetitive visual features. Keep all module controls truthful; disabled, unsupported, and unimplemented states must be clearly distinguished. Evaluate gameplay-aiding detection/prediction modules separately.
 
-## Important status
-This file is a roadmap only. No native Minecraft integration, FPS/ping telemetry, in-game HUD, or compatibility with Bedrock 1.26.50.4 has been implemented or tested yet. The existing Android APK is a separate UI prototype.
+## Release criteria
+No release as “SparkVisuals client” until the exact game version is verified and features have been tested in game. No Creator packs/add-ons, no separate .levipack distribution, no placeholder switches as completed modules.
