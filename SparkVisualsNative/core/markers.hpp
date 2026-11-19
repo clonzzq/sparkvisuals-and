@@ -52,10 +52,10 @@ struct WaypointStore {
  }
  // Versioned, quoted text format. Load is transactional: invalid input leaves this store unchanged.
  bool save(std::ostream& out) const {
-  out << "SPARKVISUALS_WAYPOINTS 1 " << entries.size() << '\\n' << std::setprecision(17);
+  out << "SPARKVISUALS_WAYPOINTS 1 " << entries.size() << '\n' << std::setprecision(17);
   for (const auto& p : entries)
    out << p.id << ' ' << std::quoted(p.name) << ' ' << std::quoted(p.dimension) << ' '
-       << p.x << ' ' << p.y << ' ' << p.z << ' ' << p.color_rgba << ' ' << (p.enabled ? 1 : 0) << '\\n';
+       << p.x << ' ' << p.y << ' ' << p.z << ' ' << p.color_rgba << ' ' << (p.enabled ? 1 : 0) << '\n';
   return static_cast<bool>(out);
  }
  bool load(std::istream& in) {
