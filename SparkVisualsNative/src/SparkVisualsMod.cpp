@@ -24,9 +24,18 @@ public:
  }
  bool enable(){
   auto registerResult=pl::modmenu::ModuleBuilder("sparkvisuals.native","SparkVisuals").modId(self.getId())
-   .description("Cosmetic HUD test panel. Game data is not connected; feature toggles remain placeholders.")
+    .description("Configurable cosmetic HUD test panel. No Minecraft game data is connected.")
    .defaultEnabled(true).onToggle([this](std::string_view,bool enabled){overlayEnabled=enabled;submitStatusOverlay(enabled);})
    .onConfigChanged([this](std::string_view,std::string_view key,std::string_view value){
+    if(key=="reset_layout"){
+     if(value=="true" || value=="1"){
+      settings.hudScale=1.0f;settings.panelX=12.0f;settings.panelY=12.0f;
+      settings.accentRgb=0xC62828;settings.backgroundRgb=0x101010;
+      if(saveSettings()) submitStatusOverlay(overlayEnabled);
+      else self.getLogger().warn("SparkVisuals: layout reset save failed.");
+     }
+     return;
+    }
     if(key=="accent_color" || key=="background_color"){
      int rgb{};
      if(!sparkvisuals::ClientSettings::parseRgb(value,rgb)){self.getLogger().warn("SparkVisuals: invalid color value.");return;}
@@ -42,19 +51,12 @@ public:
      if(saveSettings())submitStatusOverlay(overlayEnabled);else self.getLogger().warn("SparkVisuals: could not save HUD setting.");
     }catch(...){self.getLogger().warn("SparkVisuals: invalid HUD setting value.");}
    })
-   .config("coordinates","Coordinates HUD (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
-   .config("fps_ping","FPS / Ping HUD (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
-   .config("sprint_indicator","Sprint Indicator (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
-   .config("potion_hud","Potion HUD (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
-   .config("armor_hud","Armor HUD (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
-   .config("cps","CPS HUD (not rendered yet)",pl::modmenu::ConfigType::Toggle,"false")
-   .config("crosshair","Custom Crosshair (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
-   .config("zoom","Zoom toggle (not implemented)",pl::modmenu::ConfigType::Toggle,"false")
    .config("hud_scale","HUD panel scale",pl::modmenu::ConfigType::SliderFloat,std::to_string(settings.hudScale),"0.5","2.0")
    .config("panel_x","HUD panel X offset",pl::modmenu::ConfigType::SliderFloat,std::to_string(settings.panelX),"0.0","1000.0")
     .config("panel_y","HUD panel Y offset",pl::modmenu::ConfigType::SliderFloat,std::to_string(settings.panelY),"0.0","1000.0")
    .config("accent_color","HUD accent color",pl::modmenu::ConfigType::Color,"#C62828")
    .config("background_color","HUD panel background",pl::modmenu::ConfigType::Color,"#101010")
+   .config("reset_layout","Reset HUD layout and colors",pl::modmenu::ConfigType::Toggle,"false")
    .registerModule();
   if(!registerResult)return false;submitStatusOverlay(true);return true;
  }
