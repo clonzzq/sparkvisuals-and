@@ -1,7 +1,11 @@
-name: Build SparkVisuals APK
+name: Build SparkVisuals Android prototype
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "SparkVisualsApp/**"
+      - ".github/workflows/android-apk.yml"
 
 permissions:
   contents: read
@@ -9,110 +13,45 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
 
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
-        with:
-          packages: platform-tools
 
       - name: Install Android SDK packages
-        shell: bash
+        run: |
+          sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Build checked-in Android project
+        working-directory: SparkVisualsApp
+        run: gradle --no-daemon clean assembleDebug
+
+      - name: Verify APK output
         run: |
           set -euo pipefail
-          sdkmanager --install \
-            "platform-tools" \
-            "platforms;android-35" \
-            "build-tools;35.0.0"
-
-      - name: Find ZIP archive
-        id: findzip
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          ZIP=$(find . -maxdepth 1 -type f -iname '*.zip' -print -quit)
-
-          if [ -z "$ZIP" ]; then
-            echo "ERROR: ZIP archive not found in repository root."
-            exit 1
-          fi
-
-          echo "archive=$ZIP" >> "$GITHUB_OUTPUT"
-          echo "Found archive: $ZIP"
-
-      - name: Extract project
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p project
-          unzip -q "${{ steps.findzip.outputs.archive }}" -d project
-
-      - name: Locate Android project
-        id: project
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          SETTINGS=$(find project -type f \
-            \( -name settings.gradle -o -name settings.gradle.kts \) \
-            -print -quit)
-
-          if [ -z "$SETTINGS" ]; then
-            echo "ERROR: Gradle project not found in ZIP."
-            exit 1
-          fi
-
-          PROJECT_DIR=$(dirname "$SETTINGS")
-          echo "dir=$PROJECT_DIR" >> "$GITHUB_OUTPUT"
-          echo "Project directory: $PROJECT_DIR"
-
-      - name: Build APK
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          cd "${{ steps.project.outputs.dir }}"
-
-          if [ -f "./gradlew" ]; then
-            chmod +x ./gradlew
-            ./gradlew --no-daemon assembleDebug
-          else
-            gradle --no-daemon assembleDebug
-          fi
-
-      - name: Find APK
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          APK=$(find project -type f \
-            -path '*/build/outputs/apk/*/*.apk' \
-            -print -quit)
-
-          if [ -z "$APK" ]; then
-            echo "ERROR: APK was not generated."
-            exit 1
-          fi
-
-          cp "$APK" "$GITHUB_WORKSPACE/SparkVisuals-debug.apk"
-
-          echo "APK successfully prepared:"
-          ls -lh "$GITHUB_WORKSPACE/SparkVisuals-debug.apk"
+          APK="SparkVisualsApp/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          mkdir -p dist
+          cp "$APK" dist/SparkVisuals-debug.apk
+          sha256sum dist/SparkVisuals-debug.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: SparkVisuals-APK
-          path: SparkVisuals-debug.apk
+          name: SparkVisuals-Android-prototype
+          path: dist/SparkVisuals-debug.apk
           if-no-files-found: error
           retention-days: 7
