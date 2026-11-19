@@ -1,0 +1,71 @@
+{
+  "client": "SparkVisuals",
+  "version": "0.1.0-dev",
+  "theme": {
+    "background": "#101010",
+    "accent": "#C62828",
+    "text": "#F5F5F5"
+  },
+  "modules": [
+    {
+      "id": "fps",
+      "name": "FPS HUD",
+      "category": "HUD",
+      "enabled": false
+    },
+    {
+      "id": "cps",
+      "name": "CPS HUD",
+      "category": "HUD",
+      "enabled": false
+    },
+    {
+      "id": "coordinates",
+      "name": "Coordinates HUD",
+      "category": "HUD",
+      "enabled": false
+    },
+    {
+      "id": "effects",
+      "name": "Potions HUD",
+      "category": "HUD",
+      "enabled": false
+    },
+    {
+      "id": "cooldowns",
+      "name": "Cooldowns HUD",
+      "category": "HUD",
+      "enabled": false
+    },
+    {
+      "id": "armor",
+      "name": "Armor HUD",
+      "category": "HUD",
+      "enabled": false
+    },
+    {
+      "id": "crosshair",
+      "name": "Custom Crosshair",
+      "category": "Visual",
+      "enabled": false
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "category": "Visual",
+      "enabled": false
+    },
+    {
+      "id": "markers",
+      "name": "Markers",
+      "category": "Utility",
+      "enabled": true
+    },
+    {
+      "id": "hud-layout",
+      "name": "HUD Layout",
+      "category": "Settings",
+      "enabled": true
+    }
+  ]
+}
