@@ -27,13 +27,20 @@ public:
    .description("Cosmetic HUD test panel. Game data is not connected; feature toggles remain placeholders.")
    .defaultEnabled(true).onToggle([this](std::string_view,bool enabled){overlayEnabled=enabled;submitStatusOverlay(enabled);})
    .onConfigChanged([this](std::string_view,std::string_view key,std::string_view value){
+    if(key=="accent_color" || key=="background_color"){
+     int rgb{};
+     if(!sparkvisuals::ClientSettings::parseRgb(value,rgb)){self.getLogger().warn("SparkVisuals: invalid color value.");return;}
+     if(key=="accent_color") settings.accentRgb=rgb; else settings.backgroundRgb=rgb;
+     if(saveSettings()) submitStatusOverlay(overlayEnabled); else self.getLogger().warn("SparkVisuals: color save failed.");
+     return;
+    }
     try{const float parsed=std::stof(std::string(value));
      if(key=="hud_scale"){if(parsed<0.5f||parsed>2.0f)return;settings.hudScale=parsed;}
      else if(key=="panel_x"){if(parsed<0.0f||parsed>1000.0f)return;settings.panelX=parsed;}
      else if(key=="panel_y"){if(parsed<0.0f||parsed>1000.0f)return;settings.panelY=parsed;}
      else return;
      if(saveSettings())submitStatusOverlay(overlayEnabled);else self.getLogger().warn("SparkVisuals: could not save HUD setting.");
-    }catch(...){self.getLogger().warn("SparkVisuals: invalid HUD setting value.");}
+    }catch(...){self.getSelf().getLogger().warn("SparkVisuals: invalid HUD setting value.");}
    })
    .config("coordinates","Coordinates HUD (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
    .config("fps_ping","FPS / Ping HUD (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
@@ -45,7 +52,9 @@ public:
    .config("zoom","Zoom toggle (not implemented)",pl::modmenu::ConfigType::Toggle,"false")
    .config("hud_scale","HUD panel scale",pl::modmenu::ConfigType::SliderFloat,std::to_string(settings.hudScale),"0.5","2.0")
    .config("panel_x","HUD panel X offset",pl::modmenu::ConfigType::SliderFloat,std::to_string(settings.panelX),"0.0","1000.0")
-   .config("panel_y","HUD panel Y offset",pl::modmenu::ConfigType::SliderFloat,std::to_string(settings.panelY),"0.0","1000.0")
+    .config("panel_y","HUD panel Y offset",pl::modmenu::ConfigType::SliderFloat,std::to_string(settings.panelY),"0.0","1000.0")
+   .config("accent_color","HUD accent color",pl::modmenu::ConfigType::Color,"#C62828")
+   .config("background_color","HUD panel background",pl::modmenu::ConfigType::Color,"#101010")
    .registerModule();
   if(!registerResult)return false;submitStatusOverlay(true);return true;
  }
@@ -53,8 +62,8 @@ public:
   if(!enabled){pl::modmenu::submitDrawCommands("sparkvisuals.native",{});return;}
   const auto scale=settings.hudScale,x=settings.panelX*scale,y=settings.panelY*scale;
   const std::array<pl::modmenu::DrawCommand,4> commands{{
-   {.type=pl::modmenu::DrawCommandType::RectFilled,.x=x,.y=y,.w=244.0f*scale,.h=72.0f*scale,.color=0xE6101010},
-   {.type=pl::modmenu::DrawCommandType::RectFilled,.x=x,.y=y,.w=3.0f*scale,.h=72.0f*scale,.color=0xFFC62828},
+   {.type=pl::modmenu::DrawCommandType::RectFilled,.x=x,.y=y,.w=244.0f*scale,.h=72.0f*scale,.color=(0xE6000000u | static_cast<unsigned>(settings.backgroundRgb))},
+   {.type=pl::modmenu::DrawCommandType::RectFilled,.x=x,.y=y,.w=3.0f*scale,.h=72.0f*scale,.color=(0xFF000000u | static_cast<unsigned>(settings.accentRgb))},
    {.type=pl::modmenu::DrawCommandType::Text,.x=x+12.0f*scale,.y=y+8.0f*scale,.size=18.0f*scale,.color=0xFFFFFFFF,.text="SparkVisuals HUD TEST"},
    {.type=pl::modmenu::DrawCommandType::Text,.x=x+12.0f*scale,.y=y+34.0f*scale,.size=12.0f*scale,.color=0xFFFF7777,.text="Game data not connected"},
   }};
