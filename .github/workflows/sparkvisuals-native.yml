@@ -1,0 +1,61 @@
+name: SparkVisuals Native Module
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'SparkVisualsNative/**'
+      - '.github/workflows/sparkvisuals-native.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build-native:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java (required by Android tooling)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android SDK and NDK
+        uses: android-actions/setup-android@v4
+
+      - name: Install CMake and Ninja
+        run: sdkmanager 'ndk;27.2.12479018' 'cmake;3.22.1'
+
+      - name: Configure native build
+        run: |
+          cmake -S SparkVisualsNative -B SparkVisualsNative/build -G Ninja \
+            -DCMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_HOME/build/cmake/android.toolchain.cmake" \
+            -DANDROID_ABI=arm64-v8a \
+            -DANDROID_PLATFORM=android-28 \
+            -DANDROID_STL=c++_shared
+
+      - name: Compile native module
+        run: cmake --build SparkVisualsNative/build --verbose
+
+      - name: Package LeviLauncher module
+        run: |
+          set -e
+          mkdir -p package/SparkVisuals
+          cp SparkVisualsNative/manifest.json package/SparkVisuals/
+          cp SparkVisualsNative/build/libSparkVisuals.so package/SparkVisuals/
+          cd package
+          zip -r ../SparkVisuals-native-arm64.zip SparkVisuals
+          mv ../SparkVisuals-native-arm64.zip SparkVisuals-native-arm64.levipack
+          cd ..
+          test -s SparkVisuals-native-arm64.levipack
+          unzip -t SparkVisuals-native-arm64.levipack
+
+      - name: Upload native package
+        uses: actions/upload-artifact@v4
+        with:
+          name: SparkVisuals-native-arm64
+          path: SparkVisuals-native-arm64.levipack
+          if-no-files-found: error
+          retention-days: 7
