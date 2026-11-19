@@ -25,6 +25,7 @@ Android native-mod API supports Hook/Signature/Patch capabilities and native cod
 - [ ] Create black/red in-game UI concept and module catalog without pretending modules are functional.
 - [ ] Add durable config schema and settings persistence.
 - [ ] Verify public non-hook HUD drawing API with a minimal test in supported runtime.
+- [ ] Static HUD overlay test panel source added in draft PR #3; native CI is running. The panel displays only static status text and no game data.
 - [ ] Test exact target build on a real device if available.
 - [ ] Build/release only verified artifacts and state dependencies accurately.
 
