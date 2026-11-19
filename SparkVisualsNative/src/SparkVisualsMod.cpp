@@ -54,10 +54,13 @@ public:
     }
 
     bool enable() {
-        return pl::modmenu::ModuleBuilder("sparkvisuals.prototype")
+        return pl::modmenu::ModuleBuilder("sparkvisuals.native", "SparkVisuals")
             .modId(self.getId())
-            .description("SparkVisuals native loader entry. In-game HUD rendering is not yet integrated.")
+            .description("SparkVisuals native entry. Visual HUD features are being integrated; rendering is not yet connected.")
             .defaultEnabled(true)
+            .config("coordinates", "Coordinates HUD", pl::modmenu::ConfigType::Toggle, "true")
+            .config("fps", "FPS HUD", pl::modmenu::ConfigType::Toggle, "true")
+            .config("crosshair", "Custom Crosshair", pl::modmenu::ConfigType::Toggle, "false")
             .registerModule();
     }
 
