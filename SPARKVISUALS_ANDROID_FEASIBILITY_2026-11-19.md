@@ -36,3 +36,9 @@ Earlier claim that Android client mods were simply unavailable was too broad: Fl
 
 ## Practical decision
 Investigate whether LeviLauncher/Preloader publicly supports target 1.26.50.4 and whether GPL-3.0 BedrockTools can legally/technically be forked as a separate SparkVisuals native module. Do not copy proprietary client code. Before any code is claimed as functional, verify exact release/game version, build success, and runtime behavior. If the native-mod package/loader is unacceptable under the user's constraint, stop that route and do not disguise it as standalone integration.
+
+
+## Version support evidence (additional verification)
+- LeviLauncher Android releases include an explicit v1.5.27 note: “LeviLauncher 1.26.50 Support” and “Added inbuilt mod support for Minecraft 1.26.50.” The current docs state Android ARM64 and Minecraft 1.21.80+; newer launcher releases continue updating supported MC versions. This is evidence that the launcher ecosystem supports the target version line, not proof that BedrockTools itself works on 1.26.50.4: https://github.com/LiteLDev/LeviLauncher-Android/releases
+- The official compatibility docs explain that native mods are separate from Creator add-ons and that native mods must be version-matched. They run native code in the game process. This architecture may meet the no-RP/no-BP/no-Creator-Add-on constraint, but it requires a loader/runtime. Keep the distinction explicit: the current SparkVisuals launcher APK is not integrated and no native SparkVisuals build has been tested.
+- Candidate implementation strategy for further exploration: bundle a licensed-compatible native SparkVisuals module and its runtime into a customized launcher/client distribution so users do not manually import a pack; this is still a launcher + native-mod architecture, not an independently modified Minecraft APK. This remains research only until licensing, integration boundaries, build and target-version runtime are verified.
