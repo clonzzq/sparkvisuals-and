@@ -1,22 +1,28 @@
 # SparkVisuals feasibility check — 2026-11-19
 
-Target: Minecraft Bedrock Android 1.26.50.4. User requirements: in-game client integration; no Resource Packs, Behavior Packs, Add-ons; no fake module switches; no process injection, hooks, protection bypass.
+Target: Minecraft Bedrock Android 1.26.50.4. Requirements: in-game integrated client; no Resource Packs, Behavior Packs, Add-ons; no fake switches.
 
-## Verified findings
+## Android precedent (newly verified)
+- Flarial's official Play listing (updated 2026-09) claims Android release with modules, ClickGUI, themes, keybinds: https://play.google.com/store/apps/details?id=xyz.flarial.client
+- Public Flarial client repo says Windows 10/11 x64 support and does not document Android internals: https://github.com/flarialmc/dll-oss
+- Atlas official Play listing calls it a launcher requiring Minecraft from Play Store and advertises minimap, zoom, FPS, CPS, speed, keystrokes, auto-sprint, view-model/environment controls: https://play.google.com/store/apps/details?id=net.atlasclient.atlaspe
+- Atlas official site claims 60+ customizable mobile modules: https://atlasclient.net/
+- Atlas public GitHub organization has no public client source; it has a Dobby hook-framework fork, not client source: https://github.com/AtlasClientMC
 
-- Mojang's Bedrock samples version registry lists 1.26.50.4 as current/latest (dated 2026-09-15): https://github.com/Mojang/bedrock-samples/blob/main/version.json
-- Official creator update notes for 1.26.50 describe stable Script API releases (including @minecraft/server 2.10.0 and server-ui 2.2.0) and creator tooling. These APIs are provided to creator content, not as a standalone Android client plugin SDK: https://learn.microsoft.com/en-us/minecraft/creator/documents/update1.26.50
-- Official changelog likewise discusses server/script and creator APIs: https://www.minecraft.net/en-us/article/minecraft--bedrock-edition-26-50-changelog
-- LeviMC/LeviLamina is an open-source Bedrock server-side mod ecosystem, not an Android client mod loader: https://levimc.org/projects/
-- The Bedrock protocol docs document network packets and version changes; protocol documentation does not supply an Android client rendering/input mod API: https://mojang.github.io/bedrock-protocol-docs/changelog/
-- The BedrockModAPI project surfaced in research explicitly targets Windows and uses game-internals access and DirectX hooks; it is not a compatible or appropriate solution for this Android target: https://github.com/HoneyCombMCBE/BedrockModAPI
+These prove Android Bedrock clients exist. They do not provide a public, verified, reusable client SDK or source implementation for SparkVisuals.
 
-## Conclusion / blocker
+## Platform documentation
+- Bedrock version registry: https://github.com/Mojang/bedrock-samples/blob/main/version.json
+- Creator Script API docs (for creator content, not standalone Android client mods): https://learn.microsoft.com/en-us/minecraft/creator/documents/update1.26.50
+- Bedrock changelog: https://www.minecraft.net/en-us/article/minecraft--bedrock-edition-26-50-changelog
+- LeviMC/LeviLamina is server-side mod ecosystem: https://levimc.org/projects/
+- Protocol docs: https://mojang.github.io/bedrock-protocol-docs/changelog/
+- BedrockModAPI targets Windows: https://github.com/HoneyCombMCBE/BedrockModAPI
 
-No verified, supported API/SDK or legitimate Android client-mod interface was found that can add the requested HUD, entity/projectile visuals, item detection, and in-game toggles to the Bedrock Android client while also prohibiting packs/add-ons and process modification. Under these constraints, an actual integrated client is not currently buildable from the repository as it stands.
+## Conclusion
+Earlier claim that Android client mods were simply unavailable was too broad: Flarial and Atlas have public Android releases. What remains missing is a public, supported, reusable integration SDK/source or legal technical route we can verify for this project without copying proprietary internals or implementing unsupported process modification. Repo currently has no such integration.
 
-## Corrective action
-
-Removed the workflow that packaged the native scaffold as a .levipack. That artifact was not an integrated Android client and was contrary to the user's pack/add-on exclusion.
-
-Do not present the companion APK, external overlay, or native scaffold as a game-integrated client. Further work should only claim a real integration after an allowed interface is found and version compatibility is verified. Standalone app work (e.g., persistent waypoint editor) can be implemented and tested separately but is not the in-game client.
+## Corrective actions / next steps
+- Removed workflow packaging the native scaffold as .levipack; it violated pack/add-on exclusion and was not an integrated client.
+- Continue checking official integration/licensing options, open Android launcher/runtime projects and public SDK interfaces, verifying licenses and exact version compatibility.
+- Never present launcher-only, overlay-only, or scaffold work as a game-integrated client. Only claim integration after source/build/version verification.
