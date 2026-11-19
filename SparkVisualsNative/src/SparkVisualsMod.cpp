@@ -56,7 +56,7 @@ public:
     bool enable() {
         return pl::modmenu::ModuleBuilder("sparkvisuals.native", "SparkVisuals")
             .modId(self.getId())
-            .description("SparkVisuals native entry. Visual HUD features are being integrated; rendering is not yet connected.")
+            .description("SparkVisuals native entry. Loader settings are exposed; HUD rendering and game-state integration are not implemented.")
             .defaultEnabled(true)
             .config("coordinates", "Coordinates HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
             .config("fps_ping", "FPS / Ping HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
