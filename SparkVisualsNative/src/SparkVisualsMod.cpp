@@ -3,6 +3,7 @@
 #include "../core/markers.hpp"
 #include "../core/settings.hpp"
 #include <array>
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 #include <string>
