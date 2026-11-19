@@ -21,12 +21,15 @@ The workflow was corrected in commit `3fa2373` to stop extracting and building a
 - [Native integration research](NATIVE_INTEGRATION_RESEARCH.md)
 - [Native client roadmap](SPARKVISUALS_NATIVE_ROADMAP.md)
 
-The native directory contains a lifecycle/configuration experiment and a tested-independent waypoint storage component. It is not yet a verified Minecraft runtime module.
+The native directory contains a lifecycle/configuration experiment and waypoint/settings storage with passing core CI. CI has produced an ARM64 `.levipack` containing an Android AArch64 shared library. The module has a loader settings catalog, but no in-game HUD rendering or runtime load has been verified.
 
 ## Current honest status
 
 - Android UI prototype: source present; latest direct Gradle workflow has not yet been verified.
-- Native waypoint storage: C++ implementation and unit tests are present; check CI before relying on the result.
+- Native core tests: **passed** on commit `c0f4efc`.
+- Native ARM64 build: **passed**; `.levipack` artifact produced and ELF verified as AArch64 Android.
+- Loader module settings catalog: coordinates, FPS/ping, sprint, potion, armor, CPS, crosshair, zoom (settings only; no render implementation).
+- Native source menu status update: draft PR #2 awaiting CI.
 - Minecraft integration: not proven.
 - Exact Minecraft 1.26.50.4 device test: not done.
 - Verified SparkVisuals in-game client APK: **does not exist yet**.
