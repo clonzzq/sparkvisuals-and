@@ -24,6 +24,7 @@ Gradle project: `SparkVisualsApp/`. Workflow: [Build Android prototype](.github/
 - [Client architecture and feasibility](CLIENT_ARCHITECTURE.md)
 - [Native integration research](NATIVE_INTEGRATION_RESEARCH.md)
 - [Native client roadmap](SPARKVISUALS_NATIVE_ROADMAP.md)
+- [On-device test checklist](NATIVE_TESTING.md)
 
 ## Status
 
