@@ -31,6 +31,7 @@ jobs:
           cp build/native-arm64/libSparkVisuals.so build/package/SparkVisuals/
           cd build/package
           zip -r SparkVisuals-arm64.zip SparkVisuals
+          mkdir -p ../../SparkVisualsNative/dist
           mv SparkVisuals-arm64.zip ../../SparkVisualsNative/dist/SparkVisuals-arm64.zip
       - name: Upload native artifact
         uses: actions/upload-artifact@v4
