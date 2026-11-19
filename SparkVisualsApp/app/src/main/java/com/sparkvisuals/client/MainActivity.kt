@@ -136,6 +136,9 @@ class MainActivity : Activity() {
             } else "Distance: set your current X/Z above"
             val entry = panel("WAYPOINT", item.optString("name"), "X ${item.optDouble("x")}   Y ${item.optDouble("y")}   Z ${item.optDouble("z")}\n$distText")
             content.addView(entry, params(dp(86)))
+            val edit = button("EDIT WAYPOINT", Color.rgb(45, 35, 38), fg)
+            content.addView(edit, params(dp(42)))
+            edit.setOnClickListener { editMarkerDialog(item, i) }
             val remove = button("DELETE", Color.rgb(70, 25, 30), fg)
             content.addView(remove, params(dp(42)))
             remove.setOnClickListener {
@@ -147,6 +150,39 @@ class MainActivity : Activity() {
         }
         content.addView(label("Waypoint data is stored locally. Distance calculation and in-game display are not implemented.", 12, dim, false).apply { setPadding(0, dp(16), 0, 0) })
         setContentView(root)
+    }
+
+    private fun editMarkerDialog(marker: JSONObject, index: Int) {
+        val form = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(20), dp(8), dp(20), dp(8)) }
+        val nameField = EditText(this).apply { setText(marker.optString("name")); hint = "Name" }
+        val xField = coordinateInput("X").apply { setText(marker.optDouble("x").toString()) }
+        val yField = coordinateInput("Y").apply { setText(marker.optDouble("y").toString()) }
+        val zField = coordinateInput("Z").apply { setText(marker.optDouble("z").toString()) }
+        form.addView(nameField); form.addView(xField); form.addView(yField); form.addView(zField)
+        val dialog = android.app.AlertDialog.Builder(this)
+            .setTitle("Edit waypoint")
+            .setView(form)
+            .setNegativeButton("Cancel", null)
+            .setPositiveButton("Save", null)
+            .create()
+        dialog.setOnShowListener {
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val nm = nameField.text.toString().trim()
+                val xv = xField.text.toString().toDoubleOrNull()
+                val yv = yField.text.toString().toDoubleOrNull()
+                val zv = zField.text.toString().toDoubleOrNull()
+                if (nm.isBlank() || xv == null || yv == null || zv == null) {
+                    Toast.makeText(this, "Enter a name and valid X/Y/Z.", Toast.LENGTH_SHORT).show()
+                } else {
+                    val saved = loadMarkers()
+                    saved.put(index, JSONObject().put("name", nm).put("x", xv).put("y", yv).put("z", zv))
+                    prefs.edit().putString("markers_json", saved.toString()).apply()
+                    dialog.dismiss()
+                    showMarkers()
+                }
+            }
+        }
+        dialog.show()
     }
 
     private fun loadMarkers(): JSONArray = try { JSONArray(prefs.getString("markers_json", "[]")) } catch (_: Exception) { JSONArray() }
