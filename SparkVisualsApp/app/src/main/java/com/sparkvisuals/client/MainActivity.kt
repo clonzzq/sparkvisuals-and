@@ -127,7 +127,14 @@ class MainActivity : Activity() {
         if (markers.length() == 0) content.addView(panel("EMPTY", "No markers saved", "Add a waypoint above."))
         for (i in 0 until markers.length()) {
             val item = markers.optJSONObject(i) ?: continue
-            val entry = panel("WAYPOINT", item.optString("name"), "X ${item.optDouble("x")}   Y ${item.optDouble("y")}   Z ${item.optDouble("z")}")
+            val cx = prefs.getString("current_x", "")?.toDoubleOrNull()
+            val cz = prefs.getString("current_z", "")?.toDoubleOrNull()
+            val distText = if (cx != null && cz != null) {
+                val dx = item.optDouble("x") - cx
+                val dz = item.optDouble("z") - cz
+                "Distance: %.1f blocks".format(kotlin.math.sqrt(dx * dx + dz * dz))
+            } else "Distance: set your current X/Z above"
+            val entry = panel("WAYPOINT", item.optString("name"), "X ${item.optDouble("x")}   Y ${item.optDouble("y")}   Z ${item.optDouble("z")}\n$distText")
             content.addView(entry, params(dp(86)))
             val remove = button("DELETE", Color.rgb(70, 25, 30), fg)
             content.addView(remove, params(dp(42)))
