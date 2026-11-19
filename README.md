@@ -9,15 +9,15 @@ This repository is being developed toward a real in-game client. The checked-in 
 - Native source: `SparkVisualsNative/`
 - Build workflow: [Native Android mod build](.github/workflows/native-android-build.yml)
 - Output package: ARM64 `.levipack` (loader module; not a standalone APK)
-- Module code uses documented mod-menu drawing API for a static black/red test panel.
-- HUD panel scale and X/Y offset settings are saved in `settings.cfg`.
-- Settings format v2 accepts and migrates v1 files.
-- The test panel shows only static labels; game state/data is not connected.
-- Module has not been runtime-loaded or device-tested in Minecraft 1.26.50.4.
+- Module uses the documented Mod Menu draw API for a static black/red HUD test panel.
+- Panel scale and X/Y offsets persist to `settings.cfg`; settings v2 migrates v1 files.
+- Accent and background colors are configurable via Mod Menu Color entries and persisted.
+- The panel labels itself as a test and states that game data is not connected.
+- It has not been runtime-loaded or device-tested in Minecraft 1.26.50.4.
 
 ## Android companion prototype
 
-Gradle project: `SparkVisualsApp/`. Workflow: [Build Android prototype](.github/workflows/android-apk.yml). It is separate from the in-game native module and is not a client.
+Gradle project: `SparkVisualsApp/`. Workflow: [Build Android prototype](.github/workflows/android-apk.yml). This is separate from the native module and is not an in-game client.
 
 ## Research and roadmap
 
@@ -27,11 +27,14 @@ Gradle project: `SparkVisualsApp/`. Workflow: [Build Android prototype](.github/
 
 ## Status
 
-- [x] Native ARM64 compile/link and package creation verified in CI (prior revisions).
-- [x] Settings and waypoint core unit tests previously passed.
-- [ ] Latest revision adding HUD X/Y offsets and v1-to-v2 settings migration is currently under CI validation.
-- [ ] In-game loading and rendering verified on-device.
-- [ ] Exact target version/device testing.
-- [ ] Real harmless game-data HUD features (only if documented APIs provide data).
+- [x] Prior ARM64 native compile/link and package creation verified in CI.
+- [x] Settings migration, offset and color parser unit tests pass in local host compile and core CI (latest color additions queued/running).
+- [x] Scale, position, accent color and panel background controls implemented in source.
+- [ ] Latest native CI package for color/position refinements.
+- [ ] In-game load/render verification on device.
+- [ ] Exact target version/device test.
+- [ ] Real harmless game-data HUD features, only if available through documented public APIs.
 
-No process injection, game hooks/patches, protection bypass, or competitive gameplay automation will be implemented. Any in-game functionality must be demonstrated in the target game before being described as working.
+The Android launcher SDK exposes lifecycle, configuration, input, and Mod Menu APIs but no public game-state API. Game-state-dependent features would require undocumented game internals; they are not implemented here.
+
+No process injection, game hooks/patches, protection bypass, or competitive gameplay automation will be implemented. Features described as working in-game must be demonstrated in Minecraft first.
