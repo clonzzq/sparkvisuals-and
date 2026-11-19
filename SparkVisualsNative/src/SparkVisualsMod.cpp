@@ -62,6 +62,17 @@ public:
             .onToggle([](std::string_view, bool enabled) {
                 submitStatusOverlay(enabled);
             })
+            .onConfigChanged([this](std::string_view, std::string_view key, std::string_view value) {
+                if (key != "hud_scale") return;
+                try {
+                    const float scale = std::stof(std::string(value));
+                    if (scale < 0.5f || scale > 2.0f) return;
+                    settings.hudScale = scale;
+                    if (saveSettings()) submitStatusOverlay(true);
+                } catch (...) {
+                    self.getLogger().warn("SparkVisuals: invalid HUD scale setting.");
+                }
+            })
             .config("coordinates", "Coordinates HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
             .config("fps_ping", "FPS / Ping HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
             .config("sprint_indicator", "Sprint Indicator (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
@@ -70,6 +81,8 @@ public:
             .config("cps", "CPS HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "false")
             .config("crosshair", "Custom Crosshair (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
             .config("zoom", "Zoom toggle (not implemented)", pl::modmenu::ConfigType::Toggle, "false")
+            .config("hud_scale", "HUD panel scale", pl::modmenu::ConfigType::SliderFloat,
+                    std::to_string(settings.hudScale), "0.5", "2.0")
             .registerModule();
         if (!registerResult) return false;
         submitStatusOverlay(true);
@@ -83,16 +96,16 @@ public:
         }
         const std::array<pl::modmenu::DrawCommand, 4> commands{{
             {.type = pl::modmenu::DrawCommandType::RectFilled,
-             .x = 12.0f, .y = 12.0f, .w = 244.0f, .h = 72.0f,
+             .x = 12.0f * settings.hudScale, .y = 12.0f * settings.hudScale, .w = 244.0f * settings.hudScale, .h = 72.0f * settings.hudScale,
              .color = 0xE6101010},
             {.type = pl::modmenu::DrawCommandType::RectFilled,
-             .x = 12.0f, .y = 12.0f, .w = 3.0f, .h = 72.0f,
+             .x = 12.0f * settings.hudScale, .y = 12.0f * settings.hudScale, .w = 3.0f * settings.hudScale, .h = 72.0f * settings.hudScale,
              .color = 0xFFC62828},
             {.type = pl::modmenu::DrawCommandType::Text,
-             .x = 24.0f, .y = 20.0f, .size = 18.0f,
+             .x = 24.0f * settings.hudScale, .y = 20.0f * settings.hudScale, .size = 18.0f * settings.hudScale,
              .color = 0xFFFFFFFF, .text = "SparkVisuals HUD TEST"},
             {.type = pl::modmenu::DrawCommandType::Text,
-             .x = 24.0f, .y = 46.0f, .size = 12.0f,
+             .x = 24.0f * settings.hudScale, .y = 46.0f * settings.hudScale, .size = 12.0f * settings.hudScale,
              .color = 0xFFFF7777, .text = "Game data not connected"},
         }};
         pl::modmenu::submitDrawCommands("sparkvisuals.native", commands);
