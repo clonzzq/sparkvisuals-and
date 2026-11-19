@@ -26,7 +26,10 @@ int main() {
  assert(restored.find(1)->color_rgba==0xFF0000FF);
  WaypointStore unchanged;
  assert(unchanged.add({9,"Keep","overworld",1,2,3}));
- std::stringstream invalid("SPARKVISUALS_WAYPOINTS 1 2\\n1 \\"A\\" \\"overworld\\" 0 0 0 1 1\\n1 \\"B\\" \\"overworld\\" 0 0 0 1 1\\n");
+ std::stringstream invalid(R"(SPARKVISUALS_WAYPOINTS 1 2
+1 "A" "overworld" 0 0 0 1 1
+1 "B" "overworld" 0 0 0 1 1
+)");
  assert(!unchanged.load(invalid));
  assert(unchanged.find(9) && unchanged.entries.size()==1);
  assert(s.erase(1)); assert(!s.erase(1)); assert(!s.find(1));
