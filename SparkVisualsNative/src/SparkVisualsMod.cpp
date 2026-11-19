@@ -1,6 +1,7 @@
 #include <pl/Mod.hpp>
 #include <pl/ModMenu.hpp>
 #include "../core/markers.hpp"
+#include "../core/settings.hpp"
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -16,8 +17,6 @@ public:
     [[nodiscard]] ll::mod::NativeMod& getSelf() const { return self; }
 
     bool load() {
-        // Persist only user-authored waypoints in the mod-owned config directory.
-        // No game memory access, hooks, patches, or gameplay automation.
         const auto dir = self.getConfigDir();
         std::error_code ec;
         std::filesystem::create_directories(dir, ec);
@@ -26,14 +25,29 @@ public:
             return false;
         }
         waypointFile = std::filesystem::path(dir) / "waypoints.dat";
+        settingsFile = std::filesystem::path(dir) / "settings.cfg";
+
         if (std::filesystem::exists(waypointFile, ec) && !ec) {
             std::ifstream in(waypointFile);
             if (!in || !waypoints.load(in)) {
-                self.getLogger().warn("SparkVisuals: waypoint file is invalid; starting with an empty list.");
+                self.getLogger().warn("SparkVisuals: invalid waypoint file; keeping empty waypoint list.");
                 waypoints.entries.clear();
             }
-        } else {
-            saveWaypoints();
+        } else if (!saveWaypoints()) {
+            self.getLogger().error("SparkVisuals: initial waypoint config save failed.");
+            return false;
+        }
+
+        if (std::filesystem::exists(settingsFile, ec) && !ec) {
+            std::ifstream in(settingsFile);
+            if (!in || !settings.load(in)) {
+                self.getLogger().warn("SparkVisuals: settings invalid; using defaults and rewriting config.");
+                settings = sparkvisuals::ClientSettings{};
+                if (!saveSettings()) return false;
+            }
+        } else if (!saveSettings()) {
+            self.getLogger().error("SparkVisuals: initial settings save failed.");
+            return false;
         }
         self.getLogger().info("SparkVisuals native module loaded. Waypoints: {}", waypoints.entries.size());
         return true;
@@ -42,7 +56,7 @@ public:
     bool enable() {
         return pl::modmenu::ModuleBuilder("sparkvisuals.prototype")
             .modId(self.getId())
-            .description("SparkVisuals: native module is loaded. HUD rendering is not enabled in this build.")
+            .description("SparkVisuals native loader entry. In-game HUD rendering is not yet integrated.")
             .defaultEnabled(true)
             .registerModule();
     }
@@ -50,30 +64,42 @@ public:
     bool disable() { return true; }
 
     bool unload() {
-        return saveWaypoints();
+        return saveWaypoints() && saveSettings();
     }
 
 private:
-    bool saveWaypoints() {
-        if (waypointFile.empty()) return true;
-        const auto temp = waypointFile.string() + ".tmp";
+    bool writeAtomically(const std::filesystem::path& path,
+                        const auto& writer) {
+        if (path.empty()) return false;
+        const auto temp = path.string() + ".tmp";
         {
             std::ofstream out(temp, std::ios::trunc);
-            if (!out || !waypoints.save(out)) return false;
+            if (!out || !writer(out)) return false;
+            out.flush();
+            if (!out) return false;
         }
         std::error_code ec;
-        std::filesystem::rename(temp, waypointFile, ec);
+        std::filesystem::rename(temp, path, ec);
         if (ec) {
-            std::filesystem::remove(waypointFile, ec);
+            std::filesystem::remove(path, ec);
             ec.clear();
-            std::filesystem::rename(temp, waypointFile, ec);
+            std::filesystem::rename(temp, path, ec);
         }
         return !ec;
     }
 
+    bool saveWaypoints() {
+        return writeAtomically(waypointFile, [this](std::ostream& out) { return waypoints.save(out); });
+    }
+
+    bool saveSettings() {
+        return writeAtomically(settingsFile, [this](std::ostream& out) { return settings.save(out); });
+    }
+
     ll::mod::NativeMod& self;
     sparkvisuals::WaypointStore waypoints;
-    std::filesystem::path waypointFile;
+    sparkvisuals::ClientSettings settings;
+    std::filesystem::path waypointFile, settingsFile;
 };
 
 PL_REGISTER_MOD(SparkVisualsMod, SparkVisualsMod::instance())
