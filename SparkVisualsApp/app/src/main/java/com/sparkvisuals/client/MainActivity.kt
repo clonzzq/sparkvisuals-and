@@ -109,6 +109,19 @@ class MainActivity : Activity() {
                 showMarkers()
             }
         }
+        content.addView(section("DISTANCE CALCULATOR"))
+        val currentX = coordinateInput("Your current X").apply { setText(prefs.getString("current_x", "")) }
+        val currentZ = coordinateInput("Your current Z").apply { setText(prefs.getString("current_z", "")) }
+        content.addView(currentX, params(dp(50)))
+        content.addView(currentZ, params(dp(50)))
+        val calc = button("UPDATE DISTANCES", red, fg)
+        content.addView(calc, params(dp(50)))
+        calc.setOnClickListener {
+            val cx = currentX.text.toString().toDoubleOrNull()
+            val cz = currentZ.text.toString().toDoubleOrNull()
+            if (cx == null || cz == null) Toast.makeText(this, "Enter valid X/Z.", Toast.LENGTH_SHORT).show()
+            else { prefs.edit().putString("current_x", cx.toString()).putString("current_z", cz.toString()).apply(); showMarkers() }
+        }
         content.addView(section("SAVED WAYPOINTS"))
         val markers = loadMarkers()
         if (markers.length() == 0) content.addView(panel("EMPTY", "No markers saved", "Add a waypoint above."))
