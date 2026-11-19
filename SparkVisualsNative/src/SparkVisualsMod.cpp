@@ -58,9 +58,14 @@ public:
             .modId(self.getId())
             .description("SparkVisuals native entry. Visual HUD features are being integrated; rendering is not yet connected.")
             .defaultEnabled(true)
-            .config("coordinates", "Coordinates HUD", pl::modmenu::ConfigType::Toggle, "true")
-            .config("fps", "FPS HUD", pl::modmenu::ConfigType::Toggle, "true")
-            .config("crosshair", "Custom Crosshair", pl::modmenu::ConfigType::Toggle, "false")
+            .config("coordinates", "Coordinates HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("fps_ping", "FPS / Ping HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("sprint_indicator", "Sprint Indicator (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("potion_hud", "Potion HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("armor_hud", "Armor HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("cps", "CPS HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "false")
+            .config("crosshair", "Custom Crosshair (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("zoom", "Zoom toggle (not implemented)", pl::modmenu::ConfigType::Toggle, "false")
             .registerModule();
     }
 
