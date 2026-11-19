@@ -23,6 +23,11 @@ The workflow was corrected in commit `3fa2373` to stop extracting and building a
 
 The native directory contains a lifecycle/configuration experiment and waypoint/settings storage with passing core CI. CI has produced an ARM64 `.levipack` containing an Android AArch64 shared library. The module has a loader settings catalog, but no in-game HUD rendering or runtime load has been verified.
 
+## Native build artifact
+
+- Verified ARM64 native module package (`.levipack`) from CI run [44519001880](https://github.com/clonzzq/sparkvisuals-and/actions/runs/44519001880) (artifact retention: 7 days). It contains the module settings catalog but is not a standalone APK and has not been loaded in-game.
+- Draft [PR #3](https://github.com/clonzzq/sparkvisuals-and/pull/3) adds a cosmetic static HUD test panel using documented draw commands; awaiting build verification.
+
 ## Current honest status
 
 - Android UI prototype: source present; latest direct Gradle workflow has not yet been verified.
