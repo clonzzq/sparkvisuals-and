@@ -16,9 +16,9 @@ This repository is being developed toward a real in-game client. The checked-in 
 - The panel labels itself as a test and states that game data is not connected.
 - It has not been runtime-loaded or device-tested in Minecraft 1.26.50.4.
 
-## Android companion prototype
+## Standalone Android client prototype
 
-Gradle project: `SparkVisualsApp/`. Workflow: [Build Android prototype](.github/workflows/android-apk.yml). This is separate from the native module and is not an in-game client.
+Gradle project: `SparkVisualsApp/`. The APK is an independent Android app (no third-party launcher dependency) with a Play button and an opt-in draggable system overlay HUD service. It requests Android's display-over-other-apps permission. The HUD currently shows a clearly labeled preview with FPS/coordinates placeholders; it does not read Minecraft state. Build workflow: [Build Android prototype](.github/workflows/android-apk.yml).
 
 ## Research and roadmap
 
@@ -32,7 +32,7 @@ Gradle project: `SparkVisualsApp/`. Workflow: [Build Android prototype](.github/
 - [x] Native ARM64 build and `.levipack` package verified in CI: [run 44524336966](https://github.com/clonzzq/sparkvisuals-and/actions/runs/44524336966), source commit `7c456c9`.
 - [x] Settings migration, offsets and RGB parser tests passed in CI and host compile.
 - [x] Scale, position, accent color and panel background controls implemented in source.
-- [ ] In-game load/render verification on device.
+- [x] Standalone app overlay-service prototype added: opt-in overlay permission, draggable black/red HUD preview, close control, launch game shortcut.\n- [ ] CI build for standalone overlay APK after latest changes.\n- [ ] On-device overlay verification in Minecraft.
 - [ ] Exact target version/device test.
 - [ ] Real harmless game-data HUD features, only if available through documented public APIs.
 
