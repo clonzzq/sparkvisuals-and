@@ -40,7 +40,7 @@ public:
      else if(key=="panel_y"){if(parsed<0.0f||parsed>1000.0f)return;settings.panelY=parsed;}
      else return;
      if(saveSettings())submitStatusOverlay(overlayEnabled);else self.getLogger().warn("SparkVisuals: could not save HUD setting.");
-    }catch(...){self.getSelf().getLogger().warn("SparkVisuals: invalid HUD setting value.");}
+    }catch(...){self.getLogger().warn("SparkVisuals: invalid HUD setting value.");}
    })
    .config("coordinates","Coordinates HUD (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
    .config("fps_ping","FPS / Ping HUD (not rendered yet)",pl::modmenu::ConfigType::Toggle,"true")
