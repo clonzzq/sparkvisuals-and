@@ -63,7 +63,7 @@ class HudOverlayService : Service() {
             x = (16*density).toInt()
             y = (110*density).toInt()
         }
-        root.setOnTouchListener(object : android.view.View.OnTouchListener {
+        title.setOnTouchListener(object : android.view.View.OnTouchListener {
             private var startX = 0
             private var startY = 0
             private var touchX = 0f
