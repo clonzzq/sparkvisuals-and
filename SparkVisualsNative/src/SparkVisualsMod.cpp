@@ -149,6 +149,7 @@ private:
     ll::mod::NativeMod& self;
     sparkvisuals::WaypointStore waypoints;
     sparkvisuals::ClientSettings settings;
+    bool overlayEnabled{true};
     std::filesystem::path waypointFile, settingsFile;
 };
 
