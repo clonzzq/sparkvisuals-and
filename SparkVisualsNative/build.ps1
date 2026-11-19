@@ -33,6 +33,10 @@ if (Test-Path $PackageRoot) { Remove-Item $PackageRoot -Recurse -Force }
 New-Item $PackageRoot -ItemType Directory -Force | Out-Null
 Copy-Item (Join-Path $Root "manifest.json") $PackageRoot
 Copy-Item $Lib $PackageRoot
+$ConfigSource = Join-Path $Root "config"
+if (Test-Path $ConfigSource) {
+    Copy-Item $ConfigSource (Join-Path $PackageRoot "config") -Recurse -Force
+}
 $Zip = Join-Path $Dist "SparkVisuals.zip"
 if (Test-Path $Zip) { Remove-Item $Zip -Force }
 Compress-Archive -Path (Join-Path $PackageRoot "*") -DestinationPath $Zip
