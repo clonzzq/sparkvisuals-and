@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install build tools
-        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build zip
       - name: Configure Android ARM64 native module
         run: |
           cmake -S SparkVisualsNative -B build/native-arm64 -G Ninja \
@@ -24,18 +24,18 @@ jobs:
             -DANDROID_STL=c++_shared -DBUILD_TESTING=OFF
       - name: Compile shared library
         run: cmake --build build/native-arm64 --parallel
-      - name: Package preload-native mod
+      - name: Package LeviLauncher .levipack
         run: |
           mkdir -p build/package/SparkVisuals
           cp SparkVisualsNative/manifest.json build/package/SparkVisuals/
           cp build/native-arm64/libSparkVisuals.so build/package/SparkVisuals/
           cd build/package
-          zip -r SparkVisuals-arm64.zip SparkVisuals
+          zip -r SparkVisuals-0.1.0-arm64-v8a.levipack SparkVisuals
           mkdir -p ../../SparkVisualsNative/dist
-          mv SparkVisuals-arm64.zip ../../SparkVisualsNative/dist/SparkVisuals-arm64.zip
-      - name: Upload native artifact
+          mv SparkVisuals-0.1.0-arm64-v8a.levipack ../../SparkVisualsNative/dist/
+      - name: Upload native mod package
         uses: actions/upload-artifact@v4
         with:
-          name: SparkVisuals-native-arm64
-          path: SparkVisualsNative/dist/SparkVisuals-arm64.zip
+          name: SparkVisuals-levipack-arm64
+          path: SparkVisualsNative/dist/SparkVisuals-0.1.0-arm64-v8a.levipack
           retention-days: 7
