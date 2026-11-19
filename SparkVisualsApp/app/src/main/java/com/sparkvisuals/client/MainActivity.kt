@@ -200,7 +200,7 @@ class MainActivity : Activity() {
 
     private fun navCard(title: String, subtitle: String, action: () -> Unit): View {
         val v = panel("OPEN", title, subtitle)
-        v.setOnClickListener(action)
+        v.setOnClickListener { action() }
         return v
     }
     private fun panel(tag: String, title: String, subtitle: String): View {
