@@ -26,3 +26,13 @@ Earlier claim that Android client mods were simply unavailable was too broad: Fl
 - Removed workflow packaging the native scaffold as .levipack; it violated pack/add-on exclusion and was not an integrated client.
 - Continue checking official integration/licensing options, open Android launcher/runtime projects and public SDK interfaces, verifying licenses and exact version compatibility.
 - Never present launcher-only, overlay-only, or scaffold work as a game-integrated client. Only claim integration after source/build/version verification.
+
+
+## New open-source Android-native candidates (verified 2026-11-19)
+- Xelo-Client is an open-source Android Bedrock client/launcher project with launcher-level features and an in-game mod menu; its repo is GPL-3.0. This is evidence of an Android client ecosystem, but not a turnkey SparkVisuals implementation or proof of compatibility with 1.26.50.4: https://github.com/Xelo-Client/Xelo-Client
+- BedrockTools is a GPL-3.0 native C++20 Android mod for LeviLauncher/Preloader, advertises HUD/player/visual modules (including ArmorHUD, PotionHUD, coords, AutoSprint, Zoom), and provides a public SDK/event system. Its README says Android 9+, ARM64 and requires LeviLauncher plus a .levipack import: https://github.com/QYCottage/BedrockTools
+- This native-mod route is NOT Resource Pack / Behavior Pack / Creator Add-on, but it does require a third-party launcher/mod-loader and a native mod package. Therefore it does not yet satisfy a stricter “standalone client APK with nothing separately imported” interpretation. Target-game 1.26.50.4 compatibility is not verified in public README/release data.
+- A LeviMC tutorial documents Android native mods and says build prerequisites include Android SDK/NDK, CMake and Ninja; this confirms the native extension ecosystem exists, not a supported Mojang SDK: https://levimc.org/tutorials/develop/first-android-mod/
+
+## Practical decision
+Investigate whether LeviLauncher/Preloader publicly supports target 1.26.50.4 and whether GPL-3.0 BedrockTools can legally/technically be forked as a separate SparkVisuals native module. Do not copy proprietary client code. Before any code is claimed as functional, verify exact release/game version, build success, and runtime behavior. If the native-mod package/loader is unacceptable under the user's constraint, stop that route and do not disguise it as standalone integration.
