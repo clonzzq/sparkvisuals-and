@@ -2,6 +2,7 @@
 #include <pl/ModMenu.hpp>
 #include "../core/markers.hpp"
 #include "../core/settings.hpp"
+#include <array>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -54,16 +55,48 @@ public:
     }
 
     bool enable() {
-        return pl::modmenu::ModuleBuilder("sparkvisuals.native", "SparkVisuals")
+        auto registerResult = pl::modmenu::ModuleBuilder("sparkvisuals.native", "SparkVisuals")
             .modId(self.getId())
-            .description("SparkVisuals native entry. Visual HUD features are being integrated; rendering is not yet connected.")
+            .description("Cosmetic HUD test panel. Game data and HUD features are not connected.")
             .defaultEnabled(true)
-            .config("coordinates", "Coordinates HUD", pl::modmenu::ConfigType::Toggle, "true")
-            .config("fps", "FPS HUD", pl::modmenu::ConfigType::Toggle, "true")
-            .config("crosshair", "Custom Crosshair", pl::modmenu::ConfigType::Toggle, "false")
+            .onToggle([](std::string_view, bool enabled) {
+                submitStatusOverlay(enabled);
+            })
+            .config("coordinates", "Coordinates HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("fps_ping", "FPS / Ping HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("sprint_indicator", "Sprint Indicator (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("potion_hud", "Potion HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("armor_hud", "Armor HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("cps", "CPS HUD (not rendered yet)", pl::modmenu::ConfigType::Toggle, "false")
+            .config("crosshair", "Custom Crosshair (not rendered yet)", pl::modmenu::ConfigType::Toggle, "true")
+            .config("zoom", "Zoom toggle (not implemented)", pl::modmenu::ConfigType::Toggle, "false")
             .registerModule();
+        if (!registerResult) return false;
+        submitStatusOverlay(true);
+        return true;
     }
 
+    static void submitStatusOverlay(bool enabled) {
+        if (!enabled) {
+            pl::modmenu::submitDrawCommands("sparkvisuals.native", {});
+            return;
+        }
+        const std::array<pl::modmenu::DrawCommand, 4> commands{{
+            {.type = pl::modmenu::DrawCommandType::RectFilled,
+             .x = 12.0f, .y = 12.0f, .w = 244.0f, .h = 72.0f,
+             .color = 0xE6101010},
+            {.type = pl::modmenu::DrawCommandType::RectFilled,
+             .x = 12.0f, .y = 12.0f, .w = 3.0f, .h = 72.0f,
+             .color = 0xFFC62828},
+            {.type = pl::modmenu::DrawCommandType::Text,
+             .x = 24.0f, .y = 20.0f, .size = 18.0f,
+             .color = 0xFFFFFFFF, .text = "SparkVisuals HUD TEST"},
+            {.type = pl::modmenu::DrawCommandType::Text,
+             .x = 24.0f, .y = 46.0f, .size = 12.0f,
+             .color = 0xFFFF7777, .text = "Game data not connected"},
+        }};
+        pl::modmenu::submitDrawCommands("sparkvisuals.native", commands);
+    }
     bool disable() { return true; }
 
     bool unload() {
