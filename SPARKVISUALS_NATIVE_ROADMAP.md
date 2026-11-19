@@ -1,36 +1,36 @@
 # SparkVisuals native-client roadmap
 
 ## Priority
-Build the actual Android Bedrock in-game client; not companion UI or launcher shell.
+Build toward an actual Android Bedrock in-game client, not a companion UI or launcher shell.
 
 ## Research completed
 - [x] Existing Android APK and native stub audited; neither is an in-game client.
 - [x] Native Android client ecosystem researched.
-- [x] LeviLauncher Android v1.5.24 release notes explicitly add native-mod support for MC 1.26.50; current observed v1.7.1.
+- [x] LeviLauncher native-mod support researched.
 - [x] Official Android native mod guide, template, and Preloader SDK identified.
-- [x] BedrockTools MIT license verified from LICENSE file.
-- [x] Exact target 1.26.50.4 is not device-tested.
+- [x] BedrockTools MIT license verified.
+- [ ] Exact Minecraft 1.26.50.4 runtime/device test.
 
-## Safety/technical boundary
-Android native-mod API supports Hook/Signature/Patch capabilities and native code inside game process. No process injection, hooks/signature scans/patches, protection bypass, or competitive gameplay automation will be implemented. This restricts client features that require game internals. Continue only benign UI/config/HUD drawing using documented APIs without hooks.
+## Technical boundary
+Continue only with benign HUD drawing and configuration through documented public APIs. No process injection, hooks, signature scans, patches, protection bypass, or competitive gameplay automation.
 
-## Latest verified progress (2026-11-19)
-- [x] Native ARM64 CI compile/link succeeded after linking Android `log` library.
-- [x] Core marker/settings unit tests passed on commit `c0f4efc`.
-- [x] `.levipack` packaging completed; extracted ELF verified as AArch64 Android shared library (Android 28).
-- [x] Loader settings catalog exposed (coordinates, FPS/ping, sprint, potion, armor, CPS, crosshair, zoom); these are configuration-only and do not render.
-- [ ] Rebuild/CI verification for latest menu-description update is running on draft PR #2.
+## Current implementation (2026-11-19)
+- [x] Native ARM64 CI compile/link and `.levipack` packaging verified in earlier build.
+- [x] Settings and waypoint storage with core unit tests (earlier passing revision).
+- [x] Static black/red HUD test panel submitted using documented draw API; labels explicitly say game data is not connected.
+- [x] HUD scale persisted in settings.
+- [x] HUD X/Y offsets persisted; settings file v2 supports loading v1 settings for migration.
+- [ ] CI validation of latest X/Y offset + migration commits is running.
+- [ ] In-game load/render validation; source-level API use is not runtime proof.
 
-## Safe work items
-- [ ] Create black/red in-game UI concept and module catalog without pretending modules are functional.
-- [ ] Add durable config schema and settings persistence.
-- [ ] Verify public non-hook HUD drawing API with a minimal test in supported runtime.
-- [ ] Static HUD overlay test panel source added in draft PR #3; native CI is running. The panel displays only static status text and no game data.
-- [ ] Test exact target build on a real device if available.
-- [ ] Build/release only verified artifacts and state dependencies accurately.
+## Next steps
+- [ ] Verify current CI results and package the newest successful revision.
+- [ ] Test module installation/loading with a supported launcher on device and target MC version.
+- [ ] If documented public APIs expose harmless player/game state, implement one real data-backed HUD element; otherwise report API limitations.
+- [ ] Expand functional HUD only after runtime proof.
 
 ## Out of scope
-Item/entity detection, projectile predictions, trap/scrap/sugar detection, gameplay automation, aim or other competitive assistance.
+Entity/item detection, projectile prediction, trap/scrap/sugar detection, gameplay automation, aim or other competitive assistance.
 
 ## Release gate
-No release as SparkVisuals client until in-game load and real harmless HUD feature are verified on exact MC version and device.
+No release as a SparkVisuals in-game client until load and at least one harmless data-backed HUD feature are verified in the exact target Minecraft version/device.
