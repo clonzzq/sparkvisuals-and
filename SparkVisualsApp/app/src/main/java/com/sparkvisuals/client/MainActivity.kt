@@ -1,7 +1,7 @@
 package com.sparkvisuals.client
 
 import android.app.Activity
-import android.os.Bundle
+import android.os.Bundle\nimport android.content.Intent\nimport android.net.Uri\nimport android.provider.Settings
 import android.graphics.Color
 import android.graphics.Typeface
 import android.view.Gravity
@@ -38,8 +38,8 @@ class MainActivity : Activity() {
     }
 
     private fun showHome() {
-        val root = base("Home", "Android client companion / build 0.1.0")
-        content.addView(panel("GAME", "Minecraft Bedrock", "Installed game • launch shortcut"))
+        val root = base("Home", "Standalone Android HUD client / build 0.2.0")
+        content.addView(panel("GAME", "Minecraft Bedrock", "Standalone client overlay • no third-party launcher required"))
         val play = button("PLAY MINECRAFT", red, fg)
         content.addView(play, params(dp(60)))
         play.setOnClickListener { launchGame() }
@@ -48,7 +48,7 @@ class MainActivity : Activity() {
         content.addView(navCard("Markers", "Personal waypoints: names and coordinates") { showMarkers() })
         content.addView(navCard("Settings", "Client theme and local preferences") { showSettings() })
         content.addView(section("STATUS"))
-        content.addView(panel("INTEGRATION", "Not connected to Minecraft", "The controls below save in the APK only. No in-game rendering is wired yet."))
+        content.addView(panel("HUD STATUS", "Standalone overlay preview", "The draggable HUD runs above other apps. FPS and coordinates are placeholders until a supported game-data source exists."))
         content.addView(label("SPARKVISUALS • PROTOTYPE", 11, dim, false).apply { gravity = Gravity.CENTER; setPadding(0, dp(22), 0, 0) })
         setContentView(root)
     }
@@ -234,7 +234,7 @@ class MainActivity : Activity() {
     private fun dp(v: Int) = (v*resources.displayMetrics.density).toInt()
     private fun key(s: String) = s.lowercase().replace(" ", "_")
 
-    private fun launchGame() {
+    private fun startHudOverlay() {\n        if (!Settings.canDrawOverlays(this)) {\n            val permissionIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))\n            startActivity(permissionIntent)\n            Toast.makeText(this, "Allow display over other apps, then return and press Start HUD.", Toast.LENGTH_LONG).show()\n            return\n        }\n        try {\n            startService(Intent(this, HudOverlayService::class.java))\n            Toast.makeText(this, "SparkVisuals HUD started. Launch Minecraft and drag the panel.", Toast.LENGTH_LONG).show()\n        } catch (e: Exception) {\n            Toast.makeText(this, "HUD start failed: ${e.message}", Toast.LENGTH_LONG).show()\n        }\n    }\n\n    private fun launchGame() {
         val intent = packageManager.getLaunchIntentForPackage("com.mojang.minecraftpe")
         if (intent == null) Toast.makeText(this, "Minecraft Bedrock is not installed.", Toast.LENGTH_LONG).show()
         else try { startActivity(intent) } catch (e: Exception) { Toast.makeText(this, "Launch error: ${e.message}", Toast.LENGTH_LONG).show() }
