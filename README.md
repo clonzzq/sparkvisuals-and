@@ -2,43 +2,36 @@
 
 **Target:** Minecraft Bedrock Android 1.26.50.4.
 
-This repository is being developed toward a real in-game client. The checked-in Android APK is currently only a standalone UI prototype: it does not render an overlay or modify Minecraft. Do not treat it as the finished client.
+This repository is being developed toward a real in-game client. The checked-in Android APK is only a standalone UI prototype: it does not render an overlay in Minecraft and is not the finished client.
 
-## Build the Android prototype
+## Native module
 
-The Gradle project is in `SparkVisualsApp/`. GitHub Actions builds that checked-in project directly:
+- Native source: `SparkVisualsNative/`
+- Build workflow: [Native Android mod build](.github/workflows/native-android-build.yml)
+- Output package: ARM64 `.levipack` (loader module; not a standalone APK)
+- Module code uses documented mod-menu drawing API for a static black/red test panel.
+- HUD panel scale and X/Y offset settings are saved in `settings.cfg`.
+- Settings format v2 accepts and migrates v1 files.
+- The test panel shows only static labels; game state/data is not connected.
+- Module has not been runtime-loaded or device-tested in Minecraft 1.26.50.4.
 
-- Workflow: [Build SparkVisuals Android prototype](.github/workflows/android-apk.yml)
-- Build command: `gradle --no-daemon clean assembleDebug`
-- Output: `SparkVisualsApp/app/build/outputs/apk/debug/app-debug.apk`
-- Workflow artifact: `SparkVisuals-Android-prototype`
+## Android companion prototype
 
-The workflow was corrected in commit `3fa2373` to stop extracting and building a stale ZIP archive.
+Gradle project: `SparkVisualsApp/`. Workflow: [Build Android prototype](.github/workflows/android-apk.yml). It is separate from the in-game native module and is not a client.
 
-## Native module research
+## Research and roadmap
 
 - [Client architecture and feasibility](CLIENT_ARCHITECTURE.md)
 - [Native integration research](NATIVE_INTEGRATION_RESEARCH.md)
 - [Native client roadmap](SPARKVISUALS_NATIVE_ROADMAP.md)
 
-The native directory contains a lifecycle/configuration experiment and waypoint/settings storage with passing core CI. CI has produced an ARM64 `.levipack` containing an Android AArch64 shared library. The module has a loader settings catalog, but no in-game HUD rendering or runtime load has been verified.
+## Status
 
-## Native build artifact
+- [x] Native ARM64 compile/link and package creation verified in CI (prior revisions).
+- [x] Settings and waypoint core unit tests previously passed.
+- [ ] Latest revision adding HUD X/Y offsets and v1-to-v2 settings migration is currently under CI validation.
+- [ ] In-game loading and rendering verified on-device.
+- [ ] Exact target version/device testing.
+- [ ] Real harmless game-data HUD features (only if documented APIs provide data).
 
-- Verified ARM64 native module package (`.levipack`) from CI run [44519001880](https://github.com/clonzzq/sparkvisuals-and/actions/runs/44519001880) (artifact retention: 7 days). It contains the module settings catalog but is not a standalone APK and has not been loaded in-game.
-- Cosmetic static HUD test panel is in main. Its black/red panel uses the documented draw API; a HUD scale slider is persisted to `settings.cfg` (latest CI for this refinement is pending). It only draws static status text and does not read game data.
-
-## Current honest status
-
-- Android UI prototype: source present; latest direct Gradle workflow has not yet been verified.
-- Native core tests: **passed** on commit `c0f4efc`.
-- Native ARM64 build: **passed**; `.levipack` artifact produced and ELF verified as AArch64 Android.
-- Loader module settings catalog: coordinates, FPS/ping, sprint, potion, armor, CPS, crosshair, zoom (settings only; no render implementation).
-- Native source menu status update: draft PR #2 awaiting CI.
-- Minecraft integration: not proven.
-- Exact Minecraft 1.26.50.4 device test: not done.
-- Verified SparkVisuals in-game client APK: **does not exist yet**.
-
-## Product boundary
-
-No resource packs, behavior packs, creator add-ons, fake in-game toggles, process injection, game hooks/patches, protection bypasses, or competitive gameplay automation. Any feature described as working in-game must first be demonstrated in Minecraft on the target version.
+No process injection, game hooks/patches, protection bypass, or competitive gameplay automation will be implemented. Any in-game functionality must be demonstrated in the target game before being described as working.
