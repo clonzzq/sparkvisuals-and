@@ -1,29 +1,28 @@
-# SparkVisuals — client plan (2026-11-19)
+# SparkVisuals — client architecture (updated 2026-11-19)
 
-## User's target
-A real Minecraft Bedrock Android client branded SparkVisuals, target 1.26.50.4, with an in-game module menu and working HUD. Companion/waypoint-list app is not the deliverable. No Resource Packs, Behavior Packs, Creator Add-ons, or pretend toggles.
+## Goal
+A real Minecraft Bedrock Android client, target 1.26.50.4, with SparkVisuals in-game UI/HUD. Companion app is not the deliverable. User constraints: no Resource Packs, Behavior Packs, Creator Add-ons, or fake toggles.
 
-## Android reality / feasible implementation
-On Android, the game engine is a licensed Minecraft APK; a third-party client typically provides a runtime/launcher and native modules, rather than redistributing a modified Minecraft engine. The candidate implementation is a custom SparkVisuals APK based on a supported Android runtime, plus an in-game native module authored against that runtime's documented SDK. This does not make a launcher UI the client; the client milestone is native module loaded in-game and tested.
+## Verified Android platform route
+- LeviLauncher Android v1.5.24 release notes explicitly added native-mod support for Minecraft 1.26.50; v1.7.1 is current observed release (2026-11-16). This supports the target family, but exact 1.26.50.4 needs a real device test.
+- LeviLauncher is an open-source launcher that uses a licensed Google Play Minecraft installation. Its Android native mods are loaded by Preloader SDK (preloader-android) and use its own `pl::` API.
+- Official developer guide: https://levimc.org/LeviLauncher/android/guide/developer
+- Official template: https://github.com/QYCottage/levilauncher-android-mod-template
+- Preloader SDK: https://github.com/LiteLDev/preloader-android
+- LeviLauncher Android: https://github.com/LiteLDev/LeviLauncher-Android
+- BedrockTools (QYCottage): https://github.com/QYCottage/BedrockTools; LICENSE checked directly and is MIT; release v1.5.12 observed. Reference only; do not redistribute as SparkVisuals or copy code without attribution/license review.
 
-## Candidate components (research, not integrated)
-- LeviLauncher Android (Apache-2.0): supports native mods and version isolation; upstream release v1.7.1 (Nov 16 2026). Use only if integration path/license obligations are verified.
-- BedrockTools (QYCottage): public Android native C++20 mod and SDK/event system for LeviLauncher/Preloader. LICENSE file is MIT (verified directly); README describes many HUD modules. Release v1.5.12 (Nov 7 2026). Target-version compatibility must be verified on 1.26.50.4. Do not redistribute upstream module package as SparkVisuals; use it as reference only.
-- Avoid copying any code until license/attribution and runtime dependency checks are completed.
+## Technical limitation / honest assessment
+The Android mod API is a native extension API inside the game runtime. Official FAQ documents Hook, Signature and Patch capabilities and explains mods must adapt to game version changes. Implementing features that inspect/alter game state requires in-process native code and hooking/reverse engineering. We will not provide or implement process injection, game hooks/signature scans/patches, protection bypass, or competitive gameplay automation. This means the requested full cheat-style client feature set cannot be built here. Safe cosmetic HUD/UI work can continue only via supported non-hook APIs with clear limitations.
 
-## Feature scope (first release)
-Start with noncompetitive, observable features: HUD/menu framework, coordinates, FPS/ping if available through documented API, armor/effect HUD, saved markers, crosshair/zoom UI, and settings persistence. Gameplay detection/assistance (item/entity detection, projectile predictions, trap helpers) is a separate review and may not be implemented.
+## Feature scope that is safe to pursue
+Standalone UI design, config persistence, launcher integration, benign HUD drawing where supported without hooks, coordinates/markers only if exposed by supported APIs. Features requiring item/player/entity/world inspection, aim/projectile predictions, detection, gameplay automation are out of scope.
 
-## Status — honest
-- Existing Android APK builds, but is only a companion/launcher shell; it is not integrated with Minecraft.
-- Native source is lifecycle/menu scaffold only; no in-game rendering, telemetry, or modules. It has not been tested in the target runtime.
-- The last companion-app build is successful, but it is explicitly not the client and is not being treated as the deliverable.
-- No SparkVisuals in-game client APK exists yet.
+## Current status
+- Android companion/launcher APK build is successful, but it is not integrated into Minecraft.
+- Native source is lifecycle/menu scaffold only, not game-integrated.
+- No SparkVisuals in-game client APK exists; no target-device tests.
+- Candidate loader/version support research is now documented; no runtime integration proven.
 
-## Next proof gates
-1. Establish a license-compliant Android runtime base; do not call the prototype client.
-2. Verify that the runtime supports an owned Minecraft 1.26.50.4 installation on ARM64.
-3. Build a minimal native module through a documented public SDK; avoid unsupported process modification, anti-cheat bypass, or game-protection evasion.
-4. Verify module loading and one harmless HUD element on a real device; only then build out feature UI.
-5. Release APK only with exact target/device test evidence and a commit/hash.
-
+## Release gate
+Never label shell, companion, stub, or package as client. Do not ship creator packs. Any client milestone requires real in-game loading, exact target build/device test, demonstrated feature, and APK hash.

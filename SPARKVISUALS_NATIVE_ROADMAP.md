@@ -1,27 +1,28 @@
 # SparkVisuals native-client roadmap
 
-## Priority reset
-The goal is an actual Android Bedrock in-game client, not companion app/launcher UI. Stop spending effort on companion-only marker lists and decorative toggles.
+## Priority
+Build the actual Android Bedrock in-game client; not companion UI or launcher shell.
 
-## Status
-- [x] Android companion APK CI succeeds (not a client).
-- [x] Native lifecycle stub exists (not game-integrated).
-- [x] Research found Android native-mod ecosystem.
-- [x] LeviLauncher Android is Apache-2.0; supports native modules (runtime support/version must be checked).
-- [x] BedrockTools LICENSE is MIT; README describes native SDK/event APIs and 51 modules. Upstream release v1.5.12 is dated 2026-11-07.
-- [ ] Confirm target 1.26.50.4 compatibility using official/licensed game APK and supported runtime.
-- [ ] Establish custom SparkVisuals runtime packaging/license plan.
-- [ ] Minimal native SDK module loads inside game.
-- [ ] In-game menu and a real harmless HUD element on-device.
-- [ ] Feature modules and persistent settings after runtime proof.
+## Research completed
+- [x] Existing Android APK and native stub audited; neither is an in-game client.
+- [x] Native Android client ecosystem researched.
+- [x] LeviLauncher Android v1.5.24 release notes explicitly add native-mod support for MC 1.26.50; current observed v1.7.1.
+- [x] Official Android native mod guide, template, and Preloader SDK identified.
+- [x] BedrockTools MIT license verified from LICENSE file.
+- [x] Exact target 1.26.50.4 is not device-tested.
 
-## Work order
-1. Runtime compatibility + license audit, no copying source prematurely.
-2. Minimal native-module build using documented SDK/public interfaces only.
-3. On-device test and crash logs for MC 1.26.50.4.
-4. In-game UI framework, black/red theme.
-5. HUD features: coordinates, FPS/ping where API exposes them, armor, potion effects, CPS, crosshair, zoom, markers.
-6. Review gameplay helper/detection/prediction requests separately; do not implement protection bypass or competitive automation.
+## Safety/technical boundary
+Android native-mod API supports Hook/Signature/Patch capabilities and native code inside game process. No process injection, hooks/signature scans/patches, protection bypass, or competitive gameplay automation will be implemented. This restricts client features that require game internals. Continue only benign UI/config/HUD drawing using documented APIs without hooks.
+
+## Safe work items
+- [ ] Create black/red in-game UI concept and module catalog without pretending modules are functional.
+- [ ] Add durable config schema and settings persistence.
+- [ ] Verify public non-hook HUD drawing API with a minimal test in supported runtime.
+- [ ] Test exact target build on a real device if available.
+- [ ] Build/release only verified artifacts and state dependencies accurately.
+
+## Out of scope
+Item/entity detection, projectile predictions, trap/scrap/sugar detection, gameplay automation, aim or other competitive assistance.
 
 ## Release gate
-Never label launcher/companion/native stub as a client. Do not ship packs/add-ons. A client release requires verified in-game module loading, target version, device test, and APK checksum.
+No release as SparkVisuals client until in-game load and real harmless HUD feature are verified on exact MC version and device.
