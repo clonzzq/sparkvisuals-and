@@ -240,7 +240,22 @@ class MainActivity : Activity() {
     private fun dp(v: Int) = (v*resources.displayMetrics.density).toInt()
     private fun key(s: String) = s.lowercase().replace(" ", "_")
 
-    private fun startHudOverlay() {\n        if (!Settings.canDrawOverlays(this)) {\n            val permissionIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))\n            startActivity(permissionIntent)\n            Toast.makeText(this, "Allow display over other apps, then return and press Start HUD.", Toast.LENGTH_LONG).show()\n            return\n        }\n        try {\n            startService(Intent(this, HudOverlayService::class.java))\n            Toast.makeText(this, "SparkVisuals HUD started. Launch Minecraft and drag the panel.", Toast.LENGTH_LONG).show()\n        } catch (e: Exception) {\n            Toast.makeText(this, "HUD start failed: ${e.message}", Toast.LENGTH_LONG).show()\n        }\n    }\n\n    private fun launchGame() {
+    private fun startHudOverlay() {
+        if (!Settings.canDrawOverlays(this)) {
+            val permissionIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName"))
+            startActivity(permissionIntent)
+            Toast.makeText(this, "Allow display over other apps, then return and press Start HUD.", Toast.LENGTH_LONG).show()
+            return
+        }
+        try {
+            startService(Intent(this, HudOverlayService::class.java))
+            Toast.makeText(this, "SparkVisuals HUD started. Launch Minecraft and drag the panel.", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "HUD start failed: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun launchGame() {
         val intent = packageManager.getLaunchIntentForPackage("com.mojang.minecraftpe")
         if (intent == null) Toast.makeText(this, "Minecraft Bedrock is not installed.", Toast.LENGTH_LONG).show()
         else try { startActivity(intent) } catch (e: Exception) { Toast.makeText(this, "Launch error: ${e.message}", Toast.LENGTH_LONG).show() }
