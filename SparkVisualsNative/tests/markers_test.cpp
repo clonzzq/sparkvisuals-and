@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cmath>
 #include <limits>
+#include <sstream>
 using namespace sparkvisuals;
 int main() {
  WaypointStore s;
@@ -16,5 +17,17 @@ int main() {
  assert(s.update(1,{1,"New Base","overworld",6,8,0,0xFF0000FF,true}));
  assert(std::abs(WaypointStore::distance(*s.find(1),0,0,0,"overworld")-10.0)<1e-9);
  assert(!s.update(1,{2,"Wrong id","overworld",0,0,0}));
+ std::stringstream saved;
+ assert(s.save(saved));
+ WaypointStore restored;
+ assert(restored.load(saved));
+ assert(restored.entries.size()==1);
+ assert(restored.find(1)->name=="New Base");
+ assert(restored.find(1)->color_rgba==0xFF0000FF);
+ WaypointStore unchanged;
+ assert(unchanged.add({9,"Keep","overworld",1,2,3}));
+ std::stringstream invalid("SPARKVISUALS_WAYPOINTS 1 2\\n1 \\"A\\" \\"overworld\\" 0 0 0 1 1\\n1 \\"B\\" \\"overworld\\" 0 0 0 1 1\\n");
+ assert(!unchanged.load(invalid));
+ assert(unchanged.find(9) && unchanged.entries.size()==1);
  assert(s.erase(1)); assert(!s.erase(1)); assert(!s.find(1));
 }
