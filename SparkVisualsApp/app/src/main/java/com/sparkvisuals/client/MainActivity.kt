@@ -104,7 +104,7 @@ class MainActivity : Activity() {
                 Toast.makeText(this, "Enter a name and numeric X/Y/Z coordinates.", Toast.LENGTH_SHORT).show()
             } else {
                 val arr = loadMarkers()
-                arr.put(JSONObject().put("name", n).put("x", xv).put("y", yv).put("z", zv))
+                arr.put(JSONObject().put("name", n).put("x", xv).put("y", yv).put("z", zv).put("color", "Crimson").put("enabled", true))
                 prefs.edit().putString("markers_json", arr.toString()).apply()
                 showMarkers()
             }
@@ -134,7 +134,9 @@ class MainActivity : Activity() {
                 val dz = item.optDouble("z") - cz
                 "Distance: %.1f blocks".format(kotlin.math.sqrt(dx * dx + dz * dz))
             } else "Distance: set your current X/Z above"
-            val entry = panel("WAYPOINT", item.optString("name"), "X ${item.optDouble("x")}   Y ${item.optDouble("y")}   Z ${item.optDouble("z")}\n$distText")
+            val state = if (item.optBoolean("enabled", true)) "Enabled in companion list" else "Disabled in companion list"
+            val colorName = item.optString("color", "Crimson")
+            val entry = panel("WAYPOINT • $colorName", item.optString("name"), "X ${item.optDouble("x")}   Y ${item.optDouble("y")}   Z ${item.optDouble("z")}\n$state\n$distText")
             content.addView(entry, params(dp(86)))
             val edit = button("EDIT WAYPOINT", Color.rgb(45, 35, 38), fg)
             content.addView(edit, params(dp(42)))
@@ -158,7 +160,21 @@ class MainActivity : Activity() {
         val xField = coordinateInput("X").apply { setText(marker.optDouble("x").toString()) }
         val yField = coordinateInput("Y").apply { setText(marker.optDouble("y").toString()) }
         val zField = coordinateInput("Z").apply { setText(marker.optDouble("z").toString()) }
+        val enabledBox = CheckBox(this).apply {
+            text = "Enabled in companion marker list"
+            setTextColor(fg)
+            isChecked = marker.optBoolean("enabled", true)
+        }
+        val colors = arrayOf("Crimson", "Gold", "Green", "Blue", "Purple", "White")
+        var selectedColor = marker.optString("color", "Crimson")
+        val colorGroup = RadioGroup(this).apply { orientation = RadioGroup.VERTICAL }
+        colors.forEach { color ->
+            val radio = RadioButton(this).apply { text = color; setTextColor(fg); isChecked = color == selectedColor }
+            radio.setOnClickListener { selectedColor = color }
+            colorGroup.addView(radio)
+        }
         form.addView(nameField); form.addView(xField); form.addView(yField); form.addView(zField)
+        form.addView(enabledBox); form.addView(label("Marker color", 13, red, true)); form.addView(colorGroup)
         val dialog = android.app.AlertDialog.Builder(this)
             .setTitle("Edit waypoint")
             .setView(form)
@@ -175,7 +191,8 @@ class MainActivity : Activity() {
                     Toast.makeText(this, "Enter a name and valid X/Y/Z.", Toast.LENGTH_SHORT).show()
                 } else {
                     val saved = loadMarkers()
-                    saved.put(index, JSONObject().put("name", nm).put("x", xv).put("y", yv).put("z", zv))
+                    saved.put(index, JSONObject().put("name", nm).put("x", xv).put("y", yv).put("z", zv)
+                        .put("color", selectedColor).put("enabled", enabledBox.isChecked))
                     prefs.edit().putString("markers_json", saved.toString()).apply()
                     dialog.dismiss()
                     showMarkers()
