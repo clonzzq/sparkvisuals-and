@@ -11,7 +11,8 @@ This repository is being developed toward a real in-game client. The checked-in 
 - Output package: ARM64 `.levipack` (loader module; not a standalone APK)
 - Module uses the documented Mod Menu draw API for a static black/red HUD test panel.
 - Panel scale and X/Y offsets persist to `settings.cfg`; settings v2 migrates v1 files.
-- Accent and background colors are configurable via Mod Menu Color entries and persisted; nonfunctional placeholder feature toggles were removed.
+- Accent and background colors are configurable via Mod Menu Color entries and persisted.
+- Nonfunctional placeholder feature toggles were removed.
 - The panel labels itself as a test and states that game data is not connected.
 - It has not been runtime-loaded or device-tested in Minecraft 1.26.50.4.
 
@@ -28,14 +29,13 @@ Gradle project: `SparkVisualsApp/`. Workflow: [Build Android prototype](.github/
 
 ## Status
 
-- [x] Prior ARM64 native compile/link and package creation verified in CI.
-- [x] Settings migration, offset and color parser unit tests pass in local host compile and core CI (latest color additions queued/running).
+- [x] Native ARM64 build and `.levipack` package verified in CI: [run 44524336966](https://github.com/clonzzq/sparkvisuals-and/actions/runs/44524336966), source commit `7c456c9`.
+- [x] Settings migration, offsets and RGB parser tests passed in CI and host compile.
 - [x] Scale, position, accent color and panel background controls implemented in source.
-- [ ] Latest native CI package for color/position refinements.
 - [ ] In-game load/render verification on device.
 - [ ] Exact target version/device test.
 - [ ] Real harmless game-data HUD features, only if available through documented public APIs.
 
-The Android launcher SDK exposes lifecycle, configuration, input, and Mod Menu APIs but no public game-state API. Game-state-dependent features would require undocumented game internals; they are not implemented here.
+The Android launcher SDK exposes lifecycle, configuration, input and Mod Menu APIs but no public game-state API. Game-state-dependent features would require undocumented game internals; they are not implemented here.
 
 No process injection, game hooks/patches, protection bypass, or competitive gameplay automation will be implemented. Features described as working in-game must be demonstrated in Minecraft first.
