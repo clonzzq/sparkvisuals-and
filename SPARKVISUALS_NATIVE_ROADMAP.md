@@ -12,25 +12,28 @@ Build toward an actual Android Bedrock in-game client, not a companion UI or lau
 - [ ] Exact Minecraft 1.26.50.4 runtime/device test.
 
 ## Technical boundary
-Continue only with benign HUD drawing and configuration through documented public APIs. No process injection, hooks, signature scans, patches, protection bypass, or competitive gameplay automation.
+Continue only with benign HUD drawing and configuration through documented public APIs. No process injection, hooks, signature scans, patches, protection bypass, or competitive gameplay automation. Public Preloader API exposes lifecycle, config, input and Mod Menu; it does not expose a public game-state API. That makes data-dependent features unverified/unavailable without relying on game internals.
 
 ## Current implementation (2026-11-19)
-- [x] Native ARM64 CI compile/link and `.levipack` packaging verified in earlier build.
-- [x] Settings and waypoint storage with core unit tests (earlier passing revision).
-- [x] Static black/red HUD test panel submitted using documented draw API; labels explicitly say game data is not connected.
-- [x] HUD scale persisted in settings.
-- [x] HUD X/Y offsets persisted; settings file v2 supports loading v1 settings for migration.
-- [ ] CI validation of latest X/Y offset + migration commits is running.
-- [ ] In-game load/render validation; source-level API use is not runtime proof.
+- [x] Prior native ARM64 CI compile/link and `.levipack` packaging verified.
+- [x] Settings and waypoint storage with core tests.
+- [x] Static black/red HUD panel using documented draw API; panel explicitly indicates game data is not connected.
+- [x] Scale and X/Y panel position settings persist.
+- [x] Accent and background color controls persist; parser handles #RRGGBB, 0xRRGGBB and 8-digit ARGB strings.
+- [x] Settings v2 migrates older v1 settings.
+- [x] Host-compiled settings tests pass locally.
+- [ ] New native CI build/package for recent position and color changes is pending.
+- [ ] In-game load/render validation; source/API use is not runtime proof.
 
 ## Next steps
-- [ ] Verify current CI results and package the newest successful revision.
-- [ ] Test module installation/loading with a supported launcher on device and target MC version.
-- [ ] If documented public APIs expose harmless player/game state, implement one real data-backed HUD element; otherwise report API limitations.
-- [ ] Expand functional HUD only after runtime proof.
+- [ ] Finish CI and package latest successful revision.
+- [ ] Import and test module in LeviLauncher on a real device, isolated game instance.
+- [ ] Confirm actual HUD position, scale, and colors.
+- [ ] Implement additional benign data-backed HUD features only if the supported public API exposes relevant data.
+- [ ] Document limitations and tested exact game/launcher versions.
 
 ## Out of scope
-Entity/item detection, projectile prediction, trap/scrap/sugar detection, gameplay automation, aim or other competitive assistance.
+Item/entity detection, projectile prediction/aim assistance, trap/scrap/sugar detection, gameplay automation, aim or other competitive assistance.
 
 ## Release gate
-No release as a SparkVisuals in-game client until load and at least one harmless data-backed HUD feature are verified in the exact target Minecraft version/device.
+No release as a SparkVisuals in-game client until native loading and at least one harmless data-backed HUD feature are verified in exact target version/device. Current module is a static configurable test overlay, not a full client.
