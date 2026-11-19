@@ -1,15 +1,16 @@
 # SparkVisuals Native
 
-Native Android mod prototype; separate from the abandoned APK shell.
+Native Android mod prototype; separate from the companion APK.
 
 ## Current state
 - Intended target: Minecraft Bedrock Android 1.26.50.4; device compatibility is unverified.
-- ARM64, LeviLauncher Android + Preloader SDK 0.2.2.
-- Native lifecycle registration and a prototype Mod Menu entry exist.
+- Candidate runtime: LeviLauncher Android + Preloader SDK 0.2.2, ARM64.
+- Native lifecycle registration and a prototype Mod Menu entry exist, but have not been verified in-game on the target build.
 - Waypoint core supports validated create/edit, enable/disable, delete, lookup, and same-dimension distance calculation.
-- CTest unit tests cover validation, duplicate IDs, editing, toggling, deletion, and distance.
-- No gameplay HUD rendering, telemetry integration, persistence adapter, or in-game waypoint UI exists yet.
-- No APK or compiled levipack is checked in.
+- Waypoint persistence now has a versioned, quoted text format with transactional loading (invalid files do not overwrite existing state).
+- CTest covers validation, duplicate IDs, editing, toggling, deletion, distance, persistence round-trip, and rejection of malformed duplicate-ID files.
+- The persistence API is not yet connected to a runtime config directory; no waypoint HUD or in-game editor exists.
+- No SparkVisuals client APK or verified levipack exists.
 
 ## Run waypoint unit tests
     cmake -S SparkVisualsNative -B build/markers -DBUILD_TESTING=ON
@@ -20,4 +21,4 @@ Native Android mod prototype; separate from the abandoned APK shell.
 Requires Windows PowerShell, CMake 3.22+, Ninja, Android SDK and NDK. The build script targets ARM64 and intends to produce dist/arm64-v8a/SparkVisuals.levipack. The Android packaging path remains unverified on a real device.
 
 ## Scope
-Visual HUD / UI, user-configured coordinates and waypoints, customization and noncompetitive metrics. No auto-play, anti-cheat evasion, or hidden-player/object detection features.
+Safe cosmetic UI/configuration and noncompetitive metrics only. No process injection, hooks, game patches, protection bypass, item/entity detection, combat predictions, or gameplay automation.
