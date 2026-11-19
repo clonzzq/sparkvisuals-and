@@ -11,7 +11,7 @@
 - Preloader Mod Menu API documents `submitDrawCommands(moduleId, span<DrawCommand>)` and primitives for text, rect, line, circle, triangle, and image. This permits a cosmetic static overlay without reading game state.
 - SDK version pinned in this project: `preloader-android` 0.2.2. The pinned header supports draw commands but does not contain the newer HUD editor element API shown in later docs; do not use newer functions until SDK version is upgraded and compatibility verified.
 - Reference docs: https://levimc.org/LeviLaunchroid/api/mod-menu
-- Draft PR #3 adds a static black/red status panel through the documented draw API. CI and in-game rendering verification are pending.
+- Static black/red status panel source now integrated in main; ARM64 compile/package passed on PR run 44519229999. In-game rendering remains unverified.
 
 ## SparkVisuals
 Target Minecraft Bedrock Android 1.26.50.4. Current app builds, but it is a companion/launcher prototype only. Native code is a lifecycle scaffold; no in-game module or HUD has been tested. No SparkVisuals client APK exists.
