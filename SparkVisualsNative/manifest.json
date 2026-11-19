@@ -1,0 +1,10 @@
+{
+  "type": "preload-native",
+  "name": "SparkVisuals",
+  "author": "SparkVisuals",
+  "version": "0.1.0",
+  "entry": "libSparkVisuals.so",
+  "minecraft_versions": ["1.26.50*"],
+  "overwrite_files": [],
+  "overwrite_folders": []
+}
