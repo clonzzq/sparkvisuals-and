@@ -1,20 +1,36 @@
-# SparkVisuals Android — prototype (not the client)
+# SparkVisuals Android — development repository
 
-The Android app currently is a companion/launcher prototype, **not an integrated Minecraft client**. It has a visual dashboard, locally saved waypoint list, and settings stored in the app; those settings do not render or affect Minecraft. No fake module is represented as working in-game.
+**Target:** Minecraft Bedrock Android 1.26.50.4.
 
-## Verified build
-- GitHub Actions run #15 succeeded (debug APK build and artifact upload): https://github.com/clonzzq/sparkvisuals-and/actions/runs/44510111566
-- Artifact: `SparkVisuals-debug-apk` (companion prototype only; not client)
-- SHA-256: `2f860277e1c37deb1325d458346b650df06133fe1aa4315376c208648ac17d54`
-- APK workflow: `.github/workflows/sparkvisuals-android.yml`
+This repository is being developed toward a real in-game client. The checked-in Android APK is currently only a standalone UI prototype: it does not render an overlay or modify Minecraft. Do not treat it as the finished client.
 
-## Client research
-Android native client development research and documented route:
-- [Architecture and feasibility](CLIENT_ARCHITECTURE.md)
-- [Roadmap](SPARKVISUALS_NATIVE_ROADMAP.md)
+## Build the Android prototype
+
+The Gradle project is in `SparkVisualsApp/`. GitHub Actions builds that checked-in project directly:
+
+- Workflow: [Build SparkVisuals Android prototype](.github/workflows/android-apk.yml)
+- Build command: `gradle --no-daemon clean assembleDebug`
+- Output: `SparkVisualsApp/app/build/outputs/apk/debug/app-debug.apk`
+- Workflow artifact: `SparkVisuals-Android-prototype`
+
+The workflow was corrected in commit `3fa2373` to stop extracting and building a stale ZIP archive.
+
+## Native module research
+
+- [Client architecture and feasibility](CLIENT_ARCHITECTURE.md)
 - [Native integration research](NATIVE_INTEGRATION_RESEARCH.md)
+- [Native client roadmap](SPARKVISUALS_NATIVE_ROADMAP.md)
 
-The documented ecosystem candidate is LeviLauncher Android with its Preloader SDK/native-mod system. Exact MC 1.26.50.4 device compatibility and a SparkVisuals module have not been tested. We do not use Resource Packs, Behavior Packs, Creator Add-ons, fake toggles, process injection, hooks, game patches, protection bypasses, or competitive gameplay automation.
+The native directory contains a lifecycle/configuration experiment and a tested-independent waypoint storage component. It is not yet a verified Minecraft runtime module.
 
-## Target
-Minecraft Bedrock Android 1.26.50.4. A SparkVisuals client APK does not exist yet. The project will only be called a client after in-game loading and at least one real harmless feature are verified on a device.
+## Current honest status
+
+- Android UI prototype: source present; latest direct Gradle workflow has not yet been verified.
+- Native waypoint storage: C++ implementation and unit tests are present; check CI before relying on the result.
+- Minecraft integration: not proven.
+- Exact Minecraft 1.26.50.4 device test: not done.
+- Verified SparkVisuals in-game client APK: **does not exist yet**.
+
+## Product boundary
+
+No resource packs, behavior packs, creator add-ons, fake in-game toggles, process injection, game hooks/patches, protection bypasses, or competitive gameplay automation. Any feature described as working in-game must first be demonstrated in Minecraft on the target version.
