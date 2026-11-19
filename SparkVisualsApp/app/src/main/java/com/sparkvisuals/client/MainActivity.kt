@@ -1,7 +1,10 @@
 package com.sparkvisuals.client
 
 import android.app.Activity
-import android.os.Bundle\nimport android.content.Intent\nimport android.net.Uri\nimport android.provider.Settings
+import android.os.Bundle
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.graphics.Color
 import android.graphics.Typeface
 import android.view.Gravity
@@ -43,6 +46,9 @@ class MainActivity : Activity() {
         val play = button("PLAY MINECRAFT", red, fg)
         content.addView(play, params(dp(60)))
         play.setOnClickListener { launchGame() }
+        val hudStart = button("START FLOATING HUD", Color.rgb(45, 35, 38), fg)
+        content.addView(hudStart, params(dp(56)))
+        hudStart.setOnClickListener { startHudOverlay() }
         content.addView(section("CLIENT"))
         content.addView(navCard("Visual modules", "HUD preferences and visual settings") { showModules() })
         content.addView(navCard("Markers", "Personal waypoints: names and coordinates") { showMarkers() })
