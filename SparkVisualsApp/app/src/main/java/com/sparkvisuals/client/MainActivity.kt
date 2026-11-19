@@ -150,7 +150,7 @@ class MainActivity : Activity() {
     }
 
     private fun loadMarkers(): JSONArray = try { JSONArray(prefs.getString("markers_json", "[]")) } catch (_: Exception) { JSONArray() }
-    private fun coordinateInput(axis: String) = EditText(this).apply { hint = "$axis coordinate"; inputType = 8194; setTextColor(fg); setHintTextColor(dim); setSingleLine(); setBackgroundColor(panel) }
+    private fun coordinateInput(axis: String) = EditText(this).apply { hint = "$axis coordinate"; inputType = 12290; setTextColor(fg); setHintTextColor(dim); setSingleLine(); setBackgroundColor(panel) }
 
     private fun toggle(title: String, default: Boolean, key: String): View {
         val enabled = prefs.getBoolean(key, default)
