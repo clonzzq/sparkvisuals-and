@@ -11,7 +11,7 @@ This repository is being developed toward a real in-game client. The checked-in 
 - Output package: ARM64 `.levipack` (loader module; not a standalone APK)
 - Module uses the documented Mod Menu draw API for a static black/red HUD test panel.
 - Panel scale and X/Y offsets persist to `settings.cfg`; settings v2 migrates v1 files.
-- Accent and background colors are configurable via Mod Menu Color entries and persisted; a reset-layout control restores defaults. Placeholder feature toggles were removed.
+- Accent and background colors are configurable via Mod Menu Color entries and persisted; nonfunctional placeholder feature toggles were removed.
 - The panel labels itself as a test and states that game data is not connected.
 - It has not been runtime-loaded or device-tested in Minecraft 1.26.50.4.
 
@@ -29,7 +29,7 @@ Gradle project: `SparkVisualsApp/`. Workflow: [Build Android prototype](.github/
 
 - [x] Prior ARM64 native compile/link and package creation verified in CI.
 - [x] Settings migration, offset and color parser unit tests pass in local host compile and core CI (latest color additions queued/running).
-- [x] Scale, position, accent color, panel background and reset-layout controls implemented in source.
+- [x] Scale, position, accent color and panel background controls implemented in source.
 - [ ] Latest native CI package for color/position refinements.
 - [ ] In-game load/render verification on device.
 - [ ] Exact target version/device test.
