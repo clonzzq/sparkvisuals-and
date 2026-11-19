@@ -26,7 +26,7 @@ The native directory contains a lifecycle/configuration experiment and waypoint/
 ## Native build artifact
 
 - Verified ARM64 native module package (`.levipack`) from CI run [44519001880](https://github.com/clonzzq/sparkvisuals-and/actions/runs/44519001880) (artifact retention: 7 days). It contains the module settings catalog but is not a standalone APK and has not been loaded in-game.
-- Cosmetic static HUD test panel source is now in main commit `ed949c0`; native Android CI verification is running. It only draws a status panel and does not read game data.
+- Cosmetic static HUD test panel is in main. Its black/red panel uses the documented draw API; a HUD scale slider is persisted to `settings.cfg` (latest CI for this refinement is pending). It only draws static status text and does not read game data.
 
 ## Current honest status
 
