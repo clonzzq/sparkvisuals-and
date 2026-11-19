@@ -14,6 +14,13 @@ Build the actual Android Bedrock in-game client; not companion UI or launcher sh
 ## Safety/technical boundary
 Android native-mod API supports Hook/Signature/Patch capabilities and native code inside game process. No process injection, hooks/signature scans/patches, protection bypass, or competitive gameplay automation will be implemented. This restricts client features that require game internals. Continue only benign UI/config/HUD drawing using documented APIs without hooks.
 
+## Latest verified progress (2026-11-19)
+- [x] Native ARM64 CI compile/link succeeded after linking Android `log` library.
+- [x] Core marker/settings unit tests passed on commit `c0f4efc`.
+- [x] `.levipack` packaging completed; extracted ELF verified as AArch64 Android shared library (Android 28).
+- [x] Loader settings catalog exposed (coordinates, FPS/ping, sprint, potion, armor, CPS, crosshair, zoom); these are configuration-only and do not render.
+- [ ] Rebuild/CI verification for latest menu-description update is running on draft PR #2.
+
 ## Safe work items
 - [ ] Create black/red in-game UI concept and module catalog without pretending modules are functional.
 - [ ] Add durable config schema and settings persistence.
