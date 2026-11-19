@@ -59,7 +59,7 @@ public:
             .modId(self.getId())
             .description("Cosmetic HUD test panel. Game data is not connected; feature toggles remain placeholders.")
             .defaultEnabled(true)
-            .onToggle([](std::string_view, bool enabled) {
+            .onToggle([this](std::string_view, bool enabled) {
                 submitStatusOverlay(enabled);
             })
             .onConfigChanged([this](std::string_view, std::string_view key, std::string_view value) {
@@ -89,7 +89,7 @@ public:
         return true;
     }
 
-    static void submitStatusOverlay(bool enabled) {
+    void submitStatusOverlay(bool enabled) {
         if (!enabled) {
             pl::modmenu::submitDrawCommands("sparkvisuals.native", {});
             return;
