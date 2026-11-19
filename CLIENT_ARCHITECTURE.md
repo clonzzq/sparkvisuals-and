@@ -1,30 +1,29 @@
-# SparkVisuals — client architecture (updated 2026-11-19)
+# SparkVisuals — client plan (2026-11-19)
 
-## Goal
-Standalone branded Android APK / launcher for licensed Minecraft Bedrock Android, target 1.26.50.4, with SparkVisuals in-game UI and requested HUD. User constraint: no Resource Packs, Behavior Packs, Creator Add-ons, no fake toggles. Do not ship a separate pack as the proposed final solution.
+## User's target
+A real Minecraft Bedrock Android client branded SparkVisuals, target 1.26.50.4, with an in-game module menu and working HUD. Companion/waypoint-list app is not the deliverable. No Resource Packs, Behavior Packs, Creator Add-ons, or pretend toggles.
 
-## Verified candidate platform
-- LeviLauncher Android is open-source and has Android native-mod/Preloader support. Its v1.5.24 release added inbuilt native mod support for Minecraft 1.26.50. The current v1.7.1 release is newer.
-- BedrockTools is an MIT-licensed Android native C++20 mod project, with public SDK/event APIs and many HUD modules. Its upstream history shows 26.50 support and subsequent 26.60 support; target-version compatibility still must be tested on the exact 1.26.50.4 package.
-- Xelo-Client is GPL-3.0 open-source Android launcher source with a launcher-based module system and integrated launcher, but its README marks in-game mod menu as unfinished.
-- These are reference/build candidates only. No upstream source copied into SparkVisuals; no license review or engine integration completed.
+## Android reality / feasible implementation
+On Android, the game engine is a licensed Minecraft APK; a third-party client typically provides a runtime/launcher and native modules, rather than redistributing a modified Minecraft engine. The candidate implementation is a custom SparkVisuals APK based on a supported Android runtime, plus an in-game native module authored against that runtime's documented SDK. This does not make a launcher UI the client; the client milestone is native module loaded in-game and tested.
 
-## Candidate route (not yet built)
-Investigate whether a custom SparkVisuals launcher can legally and technically bundle an Android game-launch/runtime and native-mod loader into its own APK, and then ship a separately authored/relicensed SparkVisuals native module. This is still a launcher/runtime architecture, not a modified or redistributed Minecraft engine. It may still depend on a loader runtime and native modules; if user rejects those dependencies entirely, this route does not satisfy the requirement.
+## Candidate components (research, not integrated)
+- LeviLauncher Android (Apache-2.0): supports native mods and version isolation; upstream release v1.7.1 (Nov 16 2026). Use only if integration path/license obligations are verified.
+- BedrockTools (QYCottage): public Android native C++20 mod and SDK/event system for LeviLauncher/Preloader. LICENSE file is MIT (verified directly); README describes many HUD modules. Release v1.5.12 (Nov 7 2026). Target-version compatibility must be verified on 1.26.50.4. Do not redistribute upstream module package as SparkVisuals; use it as reference only.
+- Avoid copying any code until license/attribution and runtime dependency checks are completed.
 
-## Milestones
-1. **Repository/build audit:** identify APK source archive, workflow, dependencies, version/SDK configuration. Reproducibly build launcher APK and label it launcher-only.
-2. **Runtime/license audit:** read upstream launcher and Preloader integration docs, check license obligations and Android target 1.26.50.4 compatibility; do not copy code without attribution and license compliance.
-3. **Standalone packaging experiment:** prove a custom branded APK can launch an owned/official game installation using a supported route; no engine binaries redistributed, no packs/add-ons, no falsely represented modules.
-4. **Native integration proof:** only if supported and legally acceptable; produce minimal build, verify ARM64 binary and logs, test on-device with MC 1.26.50.4. Do not claim game integration without runtime proof.
-5. **Feature development:** prioritize cosmetic/noncompetitive HUD (coordinates, FPS/ping when exposed, armor/effects HUD, markers, crosshair/zoom UI) and persistence; separately assess requests that require world/game state or gameplay assistance.
-6. **Release gate:** exact target version, real device/runtime launch, module rendering and interaction tests, no placeholder toggles; APK/artifact hash and source commit recorded.
+## Feature scope (first release)
+Start with noncompetitive, observable features: HUD/menu framework, coordinates, FPS/ping if available through documented API, armor/effect HUD, saved markers, crosshair/zoom UI, and settings persistence. Gameplay detection/assistance (item/entity detection, projectile predictions, trap helpers) is a separate review and may not be implemented.
 
-## Status
-- Android launcher shell exists in a ZIP source archive and a debug APK was previously produced, but it is not an integrated client.
-- Native prototype is a lifecycle/menu stub only; no in-game HUD render, no game telemetry, no functional feature modules. It has not been runtime-tested.
-- Native build/package workflow that produced .levipack was removed because pack/add-on delivery violates the user's constraints.
-- No SparkVisuals client APK with integrated native runtime exists yet.
+## Status — honest
+- Existing Android APK builds, but is only a companion/launcher shell; it is not integrated with Minecraft.
+- Native source is lifecycle/menu scaffold only; no in-game rendering, telemetry, or modules. It has not been tested in the target runtime.
+- The last companion-app build is successful, but it is explicitly not the client and is not being treated as the deliverable.
+- No SparkVisuals in-game client APK exists yet.
 
-## Boundaries and honesty
-Do not implement anti-cheat evasion, game-protection bypass, hidden-player/object detection, competitive gameplay automation, or unsupported process modification. Do not claim a toggle works unless it changes a tested in-game feature. Keep the licensed game as an externally owned dependency.
+## Next proof gates
+1. Establish a license-compliant Android runtime base; do not call the prototype client.
+2. Verify that the runtime supports an owned Minecraft 1.26.50.4 installation on ARM64.
+3. Build a minimal native module through a documented public SDK; avoid unsupported process modification, anti-cheat bypass, or game-protection evasion.
+4. Verify module loading and one harmless HUD element on a real device; only then build out feature UI.
+5. Release APK only with exact target/device test evidence and a commit/hash.
+

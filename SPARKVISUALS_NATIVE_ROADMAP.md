@@ -1,35 +1,27 @@
-# SparkVisuals native roadmap (truthful milestones)
+# SparkVisuals native-client roadmap
 
-## 0. Current state
-- Launcher app UI: prototype, source archive, previous debug build (not game-integrated).
-- Native module: lifecycle/menu entry scaffold only, not a client.
-- Pack packaging workflow: removed because user prohibits packs/add-ons.
-- Target: Android Bedrock 1.26.50.4.
+## Priority reset
+The goal is an actual Android Bedrock in-game client, not companion app/launcher UI. Stop spending effort on companion-only marker lists and decorative toggles.
 
-## 1. Build and source audit
-- [x] Repository tree and source archive identified.
-- [x] Android APK workflow identified (builds the launcher source extracted from ZIP).
-- [x] Native scaffold and its exact limitation audited.
-- [x] Public Android native-client ecosystem found (LeviLauncher/Preloader, BedrockTools, Xelo).
-- [x] BedrockTools MIT license verified; upstream public history documents 26.50 then 26.60 support.
-- [ ] Reproducible APK workflow run against current source and artifact verified.
-- [ ] Verify what app source archive is used and its checksum/version.
+## Status
+- [x] Android companion APK CI succeeds (not a client).
+- [x] Native lifecycle stub exists (not game-integrated).
+- [x] Research found Android native-mod ecosystem.
+- [x] LeviLauncher Android is Apache-2.0; supports native modules (runtime support/version must be checked).
+- [x] BedrockTools LICENSE is MIT; README describes native SDK/event APIs and 51 modules. Upstream release v1.5.12 is dated 2026-11-07.
+- [ ] Confirm target 1.26.50.4 compatibility using official/licensed game APK and supported runtime.
+- [ ] Establish custom SparkVisuals runtime packaging/license plan.
+- [ ] Minimal native SDK module loads inside game.
+- [ ] In-game menu and a real harmless HUD element on-device.
+- [ ] Feature modules and persistent settings after runtime proof.
 
-## 2. Legal/runtime feasibility
-- [ ] Check license obligations for any launcher/loader integration.
-- [ ] Determine supported custom-launcher integration path for Android Preloader.
-- [ ] Confirm exact MC 1.26.50.4 runtime support with a legitimate installation.
-- [ ] Document any runtime/module dependency clearly.
+## Work order
+1. Runtime compatibility + license audit, no copying source prematurely.
+2. Minimal native-module build using documented SDK/public interfaces only.
+3. On-device test and crash logs for MC 1.26.50.4.
+4. In-game UI framework, black/red theme.
+5. HUD features: coordinates, FPS/ping where API exposes them, armor, potion effects, CPS, crosshair, zoom, markers.
+6. Review gameplay helper/detection/prediction requests separately; do not implement protection bypass or competitive automation.
 
-## 3. Proof of integration
-- [ ] Custom SparkVisuals APK launches owned Minecraft version.
-- [ ] Native module loads in the game runtime.
-- [ ] In-game menu opens/closes and persists config.
-- [ ] A minimal benign HUD feature works on-device.
-- [ ] Crash/compatibility test; collect logs and APK SHA.
-
-## 4. Features (after integration proof)
-Prioritize HUD / UI / saved markers and noncompetitive visual features. Keep all module controls truthful; disabled, unsupported, and unimplemented states must be clearly distinguished. Evaluate gameplay-aiding detection/prediction modules separately.
-
-## Release criteria
-No release as “SparkVisuals client” until the exact game version is verified and features have been tested in game. No Creator packs/add-ons, no separate .levipack distribution, no placeholder switches as completed modules.
+## Release gate
+Never label launcher/companion/native stub as a client. Do not ship packs/add-ons. A client release requires verified in-game module loading, target version, device test, and APK checksum.
