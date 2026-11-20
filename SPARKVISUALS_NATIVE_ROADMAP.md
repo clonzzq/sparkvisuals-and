@@ -1,37 +1,28 @@
 # SparkVisuals native-client roadmap
 
-## Priority
-Build toward an actual Android Bedrock in-game client, not a companion UI or launcher shell.
+## Non-negotiable goal
+An integrated Android client for Minecraft Bedrock 1.26.50.4, not a companion overlay or launcher shell. User excludes Resource Packs, Behavior Packs, Creator Add-ons and separately imported mod packages.
 
-## Research completed
-- [x] Existing Android APK and native stub audited; neither is an in-game client.
-- [x] Native Android client ecosystem researched.
-- [x] LeviLauncher native-mod support researched.
-- [x] Official Android native mod guide, template, and Preloader SDK identified.
-- [x] BedrockTools MIT license verified.
-- [ ] Exact Minecraft 1.26.50.4 runtime/device test.
+## Research
+- [x] Existing Android companion APK and native scaffold audited; neither is an in-game client.
+- [x] Native Android Bedrock launcher/mod ecosystems researched.
+- [x] LeviLauncher/Preloader and BedrockTools license/version details checked.
+- [x] LuaClient Mobile v0.1.2 Apache-2.0 candidate reviewed at README/status level; exact target compatibility not verified.
+- [x] Xelo-Client GPL-3.0 reviewed at repository/README level.
+- [ ] A verified, supported integration path satisfying all user constraints and exact target version.
 
-## Technical boundary
-Continue only with benign HUD drawing and configuration through documented public APIs. No process injection, hooks, signature scans, patches, protection bypass, or competitive gameplay automation. Public Preloader API exposes lifecycle, config, input and Mod Menu; it does not expose a public game-state API. That makes data-dependent features unverified/unavailable without relying on game internals.
+## Safe implementation boundary
+Continue only with benign standalone UI/configuration, persistent personal waypoint storage, and documented overlay drawing that does not access game state. No process injection, hooks, signature scans, patches, protection bypass, competitive gameplay helpers, item/entity detection, projectile prediction, or gameplay automation.
 
-## Current implementation (2026-11-19)
-- [x] Native ARM64 compile/link and `.levipack` packaging passed CI on commit `7c456c9` ([run 44524336966](https://github.com/clonzzq/sparkvisuals-and/actions/runs/44524336966)).
-- [x] Settings and waypoint storage with core tests.
-- [x] Static black/red HUD panel using documented draw API; panel explicitly indicates game data is not connected.
-- [x] Scale and X/Y panel position settings persist.
-- [x] Accent and background color controls persist; parser handles #RRGGBB, 0xRRGGBB and 8-digit ARGB strings.
-- [x] Settings v2 migrates older v1 settings.
-- [x] Host-compiled settings tests pass locally; core tests passed in CI.
-- [ ] In-game load/render validation; source/API use is not runtime proof.
+## Current implementation
+- Android companion APK build has succeeded previously; this is not a client.
+- Native settings and waypoint core plus host tests exist.
+- A static native test-panel scaffold was compiled previously, but it was not verified in-game and is not an integrated client.
+- The workflow that packaged the scaffold as a `.levipack` was removed. No package output is being treated as a deliverable.
+- No Minecraft 1.26.50.4 device test has been completed.
 
-## Next steps
-- [ ] Import and test module in LeviLauncher on a real device, isolated game instance.
-- [ ] Confirm actual HUD position, scale and colors.
-- [ ] Implement additional benign data-backed HUD features only if the supported public API exposes relevant data.
-- [ ] Document limitations and tested exact game/launcher versions.
-
-## Out of scope
-Item/entity detection, projectile prediction/aim assistance, trap/scrap/sugar detection, gameplay automation, aim or other competitive assistance.
+## Next checkpoint
+Research a legal supported client SDK/runtime that can be integrated into one APK without external packs/addons or separate mod import. If no such API exists, continue documenting feasibility and avoid building a deceptive launcher-only APK.
 
 ## Release gate
-No release as a SparkVisuals in-game client until native loading and at least one harmless data-backed HUD feature are verified in exact target version/device. Current module is a static configurable test overlay, not a full client.
+Do not label or publish a SparkVisuals in-game client until the client itself launches Minecraft 1.26.50.4, is tested on a device, and the claimed feature is demonstrated.
