@@ -1,17 +1,17 @@
 # SparkVisuals research log
 
-## 2026-11-20
-- **Verified version family:** LeviLauncher Android v1.5.24 release notes explicitly say Minecraft 1.26.50 support; not exact patch/device verification.
-- **API boundary:** Official native mod path is Preloader SDK running native code in the game process. Public docs describe UI/config/input/draw APIs but no public game-state API; state-dependent modules rely on internals. This route does not meet the no-injection/hooks constraint.
-- **Official Creator API:** Minecraft 1.26.50 Creator APIs remain pack/creator-content APIs; not a standalone Android client API. Packs/add-ons are out of scope.
-- **Android overlay alternative:** system application overlays are external to Minecraft, permission-based, and Android 12+ can hide/block interactions; rejected as not a full in-game client.
-- **CI:** waypoint-core tests succeeded (run 44514320765). Native prototype and Android debug APK CI builds succeeded (runs 44525792538 / 44525792379). These are build/test evidence only, not runtime integration.
-- **Outcome:** no safe, verified technical path found that meets all constraints. No source changes this run; documentation-only research update.
+## 2026-11-20 — follow-up
+- Checked LuaClient Mobile v0.1.2 README/status and LICENSE: Apache-2.0. The fork's own compatibility note limits its safe-mode report to Android 15 + Minecraft 1.26.45.x; target 1.26.50.4 is not established.
+- Rechecked Xelo-Client (GPL-3.0, launcher-oriented README; in-game menu marked not implemented) and BedrockTools (MIT; native module ecosystem requires LeviLauncher/Preloader and separate package).
+- LeviLauncher Android v1.7.1 latest observed release; v1.5.24 release notes added Minecraft 1.26.50 support, not exact patch/device runtime.
+- Repository work: clarified root/app README and roadmap; added research checkpoint; removed the workflow that generated a `.levipack` scaffold so it cannot be presented as the requested client. No game integration code was added.
+- Verification: GitHub confirmed the deletion commit and main tree no longer contains `.github/workflows/native-android-build.yml`. Existing Android companion CI run 44525792538 succeeded and artifact exists, but it is only the prototype. No build was run for documentation-only changes; no device test.
+- Result: still no verified supported path satisfying standalone integrated client + no packs/add-ons/separate mod package + exact 1.26.50.4 + live data. Continue searching for a documented SDK/runtime and preserve the honest release gate.
 
-### Source links
-- LeviLauncher release notes: https://github.com/LiteLDev/LeviLauncher-Android/releases
-- Native mod quick start: https://levimc.org/LeviLauncher/android/guide/developer
-- LeviLauncher Android FAQ/API limits: https://levimc.org/LeviLauncher/faq/play/android/usage/
-- Bedrock 1.26.50 Creator update: https://learn.microsoft.com/en-us/minecraft/creator/documents/update1.26.50
-- Android overlay restrictions: https://developer.android.com/about/versions/12/features and https://developer.android.com/about/versions/12/behavior-changes-all
-- SparkVisuals CI: https://github.com/clonzzq/sparkvisuals-and/actions/runs/44514320765, https://github.com/clonzzq/sparkvisuals-and/actions/runs/44525792538, https://github.com/clonzzq/sparkvisuals-and/actions/runs/44525792379
+### References
+- LeviLauncher Android releases: https://github.com/LiteLDev/LeviLauncher-Android/releases
+- Native-mod guide: https://levimc.org/LeviLauncher/android/guide/developer
+- BedrockTools: https://github.com/QYCottage/BedrockTools
+- LuaClient Mobile: https://github.com/KauanGitpy/LuaClient-Android
+- Xelo-Client: https://github.com/Xelo-Client/Xelo-Client
+- SparkVisuals commits: https://github.com/clonzzq/sparkvisuals-and/commits/main
