@@ -1,41 +1,34 @@
 # SparkVisuals Android — development repository
 
-**Target:** Minecraft Bedrock Android 1.26.50.4.
+**Target game:** Minecraft Bedrock Android 1.26.50.4  
+**User requirement:** an actual integrated client, not a companion app; no Resource Packs, Behavior Packs, Creator Add-ons, or separately imported mod packages.
 
-This repository is being developed toward a real in-game client. The checked-in Android APK is only a standalone UI prototype: it does not render an overlay in Minecraft and is not the finished client.
+## Honest status
 
-## Native module
+- `SparkVisualsApp/` is a standalone Android companion/UI prototype. It can launch Minecraft and show a draggable external preview overlay. Its FPS/coordinates are placeholders; it does not read game state or draw inside Minecraft.
+- `SparkVisualsNative/` is experimental native source and testable settings/waypoint core. It is not a verified integrated client. It has not been runtime-tested against the target game/device.
+- The former workflow that packaged the native scaffold as a `.levipack` has been removed because that package is not the requested standalone client deliverable.
+- No SparkVisuals in-game client APK exists. No module is claimed to work in-game.
 
-- Native source: `SparkVisualsNative/`
-- Build workflow: [Native Android mod build](.github/workflows/native-android-build.yml)
-- Output package: ARM64 `.levipack` (loader module; not a standalone APK)
-- Module uses the documented Mod Menu draw API for a static black/red HUD test panel.
-- Panel scale and X/Y offsets persist to `settings.cfg`; settings v2 migrates v1 files.
-- Accent and background colors are configurable via Mod Menu Color entries and persisted.
-- Nonfunctional placeholder feature toggles were removed.
-- The panel labels itself as a test and states that game data is not connected.
-- It has not been runtime-loaded or device-tested in Minecraft 1.26.50.4.
+## Repository
 
-## Standalone Android client prototype
+- Android prototype: `SparkVisualsApp/`
+- Experimental native source and host tests: `SparkVisualsNative/`
+- Android prototype CI: `.github/workflows/android-apk.yml`
+- Native core tests: `.github/workflows/native-core-tests.yml`
 
-Gradle project: `SparkVisualsApp/`. The APK is an independent Android app (no third-party launcher dependency) with a Play button and an opt-in draggable system overlay HUD service. It requests Android's display-over-other-apps permission. The HUD currently shows a clearly labeled preview with FPS/coordinates placeholders; it does not read Minecraft state. Build workflow: [Build Android prototype](.github/workflows/android-apk.yml).
-
-## Research and roadmap
+## Research and next steps
 
 - [Client architecture and feasibility](CLIENT_ARCHITECTURE.md)
 - [Native integration research](NATIVE_INTEGRATION_RESEARCH.md)
 - [Native client roadmap](SPARKVISUALS_NATIVE_ROADMAP.md)
 - [On-device test checklist](NATIVE_TESTING.md)
+- [Android feasibility research](SPARKVISUALS_ANDROID_FEASIBILITY_2026-11-19.md)
 
-## Status
+Open-source Android launcher/client projects are research references only. A project requiring a separate native-mod loader/package is not accepted as the final SparkVisuals deliverable. The new LuaClient Mobile fork is an interesting Apache-2.0 launcher base, but its own compatibility/status report is for Minecraft 1.26.45.x, not the exact target 1.26.50.4; compatibility is unverified.
 
-- [x] Native ARM64 build and `.levipack` package verified in CI: [run 44524336966](https://github.com/clonzzq/sparkvisuals-and/actions/runs/44524336966), source commit `7c456c9`.
-- [x] Settings migration, offsets and RGB parser tests passed in CI and host compile.
-- [x] Scale, position, accent color and panel background controls implemented in source.
-- [x] Standalone app overlay-service prototype added: opt-in overlay permission, draggable black/red HUD preview, close control, launch game shortcut.\n- [ ] CI build for standalone overlay APK after latest changes.\n- [ ] On-device overlay verification in Minecraft.
-- [ ] Exact target version/device test.
-- [ ] Real harmless game-data HUD features, only if available through documented public APIs.
+## Scope and safety boundary
 
-The Android launcher SDK exposes lifecycle, configuration, input and Mod Menu APIs but no public game-state API. Game-state-dependent features would require undocumented game internals; they are not implemented here.
+Cosmetic UI, configuration, persistent personal waypoint data, and benign overlays are the only implementation areas considered here. Game-state-dependent item/entity detection, projectile predictions, competitive helpers, gameplay automation, undocumented hooks, process injection, signature scanning, patching, and protection bypass are not implemented.
 
-No process injection, game hooks/patches, protection bypass, or competitive gameplay automation will be implemented. Features described as working in-game must be demonstrated in Minecraft first.
+A feature may be called functional only after it is built and demonstrated on the exact Minecraft version/device. Do not publish a prototype or loader package as a client.
