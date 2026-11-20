@@ -1,57 +1,18 @@
-# SparkVisuals feasibility check — 2026-11-19
-
-Target: Minecraft Bedrock Android 1.26.50.4. Requirements: in-game integrated client; no Resource Packs, Behavior Packs, Add-ons; no fake switches.
-
-## Android precedent (newly verified)
-- Flarial's official Play listing (updated 2026-09) claims Android release with modules, ClickGUI, themes, keybinds: https://play.google.com/store/apps/details?id=xyz.flarial.client
-- Public Flarial client repo says Windows 10/11 x64 support and does not document Android internals: https://github.com/flarialmc/dll-oss
-- Atlas official Play listing calls it a launcher requiring Minecraft from Play Store and advertises minimap, zoom, FPS, CPS, speed, keystrokes, auto-sprint, view-model/environment controls: https://play.google.com/store/apps/details?id=net.atlasclient.atlaspe
-- Atlas official site claims 60+ customizable mobile modules: https://atlasclient.net/
-- Atlas public GitHub organization has no public client source; it has a Dobby hook-framework fork, not client source: https://github.com/AtlasClientMC
-
-These prove Android Bedrock clients exist. They do not provide a public, verified, reusable client SDK or source implementation for SparkVisuals.
-
-## Platform documentation
-- Bedrock version registry: https://github.com/Mojang/bedrock-samples/blob/main/version.json
-- Creator Script API docs (for creator content, not standalone Android client mods): https://learn.microsoft.com/en-us/minecraft/creator/documents/update1.26.50
-- Bedrock changelog: https://www.minecraft.net/en-us/article/minecraft--bedrock-edition-26-50-changelog
-- LeviMC/LeviLamina is server-side mod ecosystem: https://levimc.org/projects/
-- Protocol docs: https://mojang.github.io/bedrock-protocol-docs/changelog/
-- BedrockModAPI targets Windows: https://github.com/HoneyCombMCBE/BedrockModAPI
-
-## Conclusion
-Earlier claim that Android client mods were simply unavailable was too broad: Flarial and Atlas have public Android releases. What remains missing is a public, supported, reusable integration SDK/source or legal technical route we can verify for this project without copying proprietary internals or implementing unsupported process modification. Repo currently has no such integration.
-
-## Corrective actions / next steps
-- Removed workflow packaging the native scaffold as .levipack; it violated pack/add-on exclusion and was not an integrated client.
-- Continue checking official integration/licensing options, open Android launcher/runtime projects and public SDK interfaces, verifying licenses and exact version compatibility.
-- Never present launcher-only, overlay-only, or scaffold work as a game-integrated client. Only claim integration after source/build/version verification.
 
 
-## New open-source Android-native candidates (verified 2026-11-19)
-- Xelo-Client is an open-source Android Bedrock client/launcher project with launcher-level features and an in-game mod menu; its repo is GPL-3.0. This is evidence of an Android client ecosystem, but not a turnkey SparkVisuals implementation or proof of compatibility with 1.26.50.4: https://github.com/Xelo-Client/Xelo-Client
-- BedrockTools is an MIT-licensed native C++20 Android mod for LeviLauncher/Preloader, advertises HUD/player/visual modules (including ArmorHUD, PotionHUD, coords, AutoSprint, Zoom), and provides a public SDK/event system. Its README says Android 9+, ARM64 and requires LeviLauncher plus a .levipack import: https://github.com/QYCottage/BedrockTools
-- This native-mod route is NOT Resource Pack / Behavior Pack / Creator Add-on, but it does require a third-party launcher/mod-loader and a native mod package. Therefore it does not yet satisfy a stricter “standalone client APK with nothing separately imported” interpretation. Target-game 1.26.50.4 compatibility is not verified in public README/release data.
-- A LeviMC tutorial documents Android native mods and says build prerequisites include Android SDK/NDK, CMake and Ninja; this confirms the native extension ecosystem exists, not a supported Mojang SDK: https://levimc.org/tutorials/develop/first-android-mod/
+## New research checkpoint — 2026-11-20
 
-## Practical decision
-Investigate whether LeviLauncher/Preloader publicly supports target 1.26.50.4 and whether GPL-3.0 BedrockTools can legally/technically be forked as a separate SparkVisuals native module. Do not copy proprietary client code. Before any code is claimed as functional, verify exact release/game version, build success, and runtime behavior. If the native-mod package/loader is unacceptable under the user's constraint, stop that route and do not disguise it as standalone integration.
+### LuaClient Mobile (new candidate, not adopted)
+- Repository: https://github.com/KauanGitpy/LuaClient-Android
+- The public repository describes v0.1.2 as an Android ARM64 launcher fork of LeviLauncher-Android, with native core `libLuaClient.so`, module menu, local Zoom/HUD/touch controls and a documented compatibility-safe mode.
+- LICENSE checked directly: Apache-2.0. It preserves upstream notices and lists dependencies/credits.
+- Its own status document says Minecraft 1.26.45.x on Android 15 enters safe mode; additional native modules are unavailable in that configuration. Its target version is not our exact 1.26.50.4, and this repository has not been built or device-tested by SparkVisuals.
+- This is a launcher/client base reference, not proof that requested item-detection or trajectory features are supported. No source was copied.
 
+### Xelo-Client and BedrockTools re-evaluated
+- Xelo-Client: public Android client/launcher source, GPL-3.0. Repository README advertises launcher/config/theme/version-manager features but labels the in-game mod menu as not implemented. It is not verified for Minecraft 1.26.50.4.
+- BedrockTools: MIT-licensed Android ARM64 native-mod project with many HUD/visual modules; its public release is a `.levipack` for LeviLauncher. That loader/package workflow is not the requested standalone integrated SparkVisuals client and is not adopted.
+- LeviLauncher Android v1.7.1 is the latest release observed (2026-11-16); native-mod support for Minecraft 1.26.50 was added in v1.5.24. This demonstrates a loader ecosystem, not a no-loader standalone SDK.
 
-## Version support evidence (additional verification)
-- LeviLauncher Android releases include an explicit v1.5.27 note: “LeviLauncher 1.26.50 Support” and “Added inbuilt mod support for Minecraft 1.26.50.” The current docs state Android ARM64 and Minecraft 1.21.80+; newer launcher releases continue updating supported MC versions. This is evidence that the launcher ecosystem supports the target version line, not proof that BedrockTools itself works on 1.26.50.4: https://github.com/LiteLDev/LeviLauncher-Android/releases
-- The official compatibility docs explain that native mods are separate from Creator add-ons and that native mods must be version-matched. They run native code in the game process. This architecture may meet the no-RP/no-BP/no-Creator-Add-on constraint, but it requires a loader/runtime. Keep the distinction explicit: the current SparkVisuals launcher APK is not integrated and no native SparkVisuals build has been tested.
-- Candidate implementation strategy for further exploration: bundle a licensed-compatible native SparkVisuals module and its runtime into a customized launcher/client distribution so users do not manually import a pack; this is still a launcher + native-mod architecture, not an independently modified Minecraft APK. This remains research only until licensing, integration boundaries, build and target-version runtime are verified.
-
-
-## Current source compatibility and license check
-- Upstream BedrockTools main branch README describes 51 modules, native C++20 Android ARM64, Preloader/LeviLauncher, SDK/event system. Repository license is MIT (verified from LICENSE file). Its build is documented via xmake, NDK r28c and CI workflow. Sources: https://github.com/QYCottage/BedrockTools and https://github.com/QYCottage/BedrockTools/blob/main/.github/workflows/build.yml
-- Upstream activity indicates explicit 26.50 support commit (Sep 15) and subsequent 26.60 support (recent). Public releases are version-specific; latest release page and README don't establish a downloadable artifact for our exact 1.26.50.4 target, so runtime compatibility must still be tested. Activity evidence: https://github.com/QYCottage/BedrockTools/activity
-- LeviLauncher Android 1.5.24 added inbuilt mod support for Minecraft 1.26.50; current Android release v1.7.1 is newer. Native modules are loaded by its Preloader. Official release page: https://github.com/LiteLDev/LeviLauncher-Android/releases
-- Xelo-Client is GPL-3.0 and has an integrated launcher, launcher-based modules, backup/config systems, shaders, and Android app source, but README marks in-game mod menu as not implemented. It is a reference for a self-contained launcher UI, not an integrated native gameplay client. Source: https://github.com/Xelo-Client/Xelo-Client
-- Licensing note corrected: BedrockTools LICENSE is MIT, not GPL-3.0. No upstream code has been copied into SparkVisuals.
-
-## Next engineering checkpoint
-1. Determine whether upstream BedrockTools build/source can be adapted as a separate SparkVisuals fork with version-specific target 1.26.50.4 and the requested modules, rather than just rebadging it.
-2. Establish a reproducible ARM64 CI build and verify artifact contents/manifest, but do not publish it as a playable client until it launches in Minecraft 1.26.50.4 and module behavior is runtime-tested.
-3. Work toward a launcher package with the native component integrated in its install flow; transparently disclose if Android loader/runtime is still a dependency. The user specifically rejects pack/add-on content, so no .levipack/Creator pack workaround is considered the final deliverable.
+### Decision
+No verified public-source route has been found that simultaneously satisfies (1) standalone/integrated client APK, (2) no Resource/Behavior/Creator Add-ons and no separately imported mod package, (3) exact 1.26.50.4 compatibility, and (4) the requested live game-data helpers. Keep researching legal, supported SDK/runtime integration; do not present an external overlay or launcher module as the final client.
