@@ -24,3 +24,10 @@
 - Updated app README to describe this capability honestly. Android CI will verify compilation; no Android device or exact Minecraft 1.26.50.4 runtime test is available.
 - Research update: official creator HUD APIs are pack/add-on APIs and excluded by the user's constraint; official Minecraft deep links are documented as internal/unstable and are not a HUD SDK. No supported standalone client SDK found.
 - References: https://learn.microsoft.com/en-us/minecraft/creator/documents/update1.21?view=minecraft-bedrock-stable ; https://github.com/MicrosoftDocs/minecraft-creator/blob/main/creator/Reference/Content/deep-links.md
+
+
+## 2026-11-21 — candidate review
+- Found Flarial Android as an existing separate client app on Google Play. Release listings indicate recent Bedrock 26.50/26.51/26.52 support, but exact 1.26.50.4 and device compatibility are not verified. Android APK source/license not publicly identified. The desktop public AGPL-3.0 repository says portions are private and its build instructions are Windows-specific; not a source base for SparkVisuals.
+- Reviewed the C++ Bedrock protocol library M9CHKO/bedrock-protocol at a high level. It is networking/protocol infrastructure, not a renderer or supported game-client HUD SDK, so it cannot replace the existing game for this project.
+- New research does not produce a supported integration path under the no-packs/no-addons/no-unsupported-game-modification constraints.
+- Sources: https://flarial.xyz/ ; https://play.google.com/store/apps/details?id=xyz.flarial.client ; https://github.com/flarialmc/dll-oss ; https://github.com/M9CHKO/bedrock-protocol
