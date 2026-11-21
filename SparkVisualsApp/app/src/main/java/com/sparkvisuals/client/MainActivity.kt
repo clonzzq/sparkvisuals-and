@@ -41,20 +41,20 @@ class MainActivity : Activity() {
     }
 
     private fun showHome() {
-        val root = base("Home", "Standalone Android HUD client / build 0.2.0")
-        content.addView(panel("GAME", "Minecraft Bedrock", "Standalone client overlay • no third-party launcher required"))
+        val root = base("Home", "Standalone companion • external overlay only")
+        content.addView(panel("GAME", "Minecraft Bedrock", "Launches the official installed game. No in-game client integration."))
         val play = button("PLAY MINECRAFT", red, fg)
         content.addView(play, params(dp(60)))
         play.setOnClickListener { launchGame() }
-        val hudStart = button("START FLOATING HUD", Color.rgb(45, 35, 38), fg)
+        val hudStart = button("START EXTERNAL HUD", Color.rgb(45, 35, 38), fg)
         content.addView(hudStart, params(dp(56)))
         hudStart.setOnClickListener { startHudOverlay() }
         content.addView(section("CLIENT"))
         content.addView(navCard("Visual modules", "HUD preferences and visual settings") { showModules() })
-        content.addView(navCard("Markers", "Personal waypoints: names and coordinates") { showMarkers() })
+        content.addView(navCard("Markers", "Saved waypoints and manually entered position") { showMarkers() })
         content.addView(navCard("Settings", "Client theme and local preferences") { showSettings() })
         content.addView(section("STATUS"))
-        content.addView(panel("HUD STATUS", "Standalone overlay preview", "The draggable HUD runs above other apps. FPS and coordinates are placeholders until a supported game-data source exists."))
+        content.addView(panel("HUD STATUS", "External overlay preview", "Displays coordinates you enter manually and distance to your nearest enabled waypoint. It does not read Minecraft."))
         content.addView(label("SPARKVISUALS • PROTOTYPE", 11, dim, false).apply { gravity = Gravity.CENTER; setPadding(0, dp(22), 0, 0) })
         setContentView(root)
     }
@@ -88,8 +88,9 @@ class MainActivity : Activity() {
     }
 
     private fun showMarkers() {
-        val root = base("Markers", "Personal waypoints only — no automatic detection")
+        val root = base("Markers", "Saved waypoints • manual coordinates • external HUD")
         content.addView(navCard("← Back", "Return to dashboard") { showHome() })
+
         content.addView(section("ADD WAYPOINT"))
         val name = EditText(this).apply { hint = "Marker name (e.g. Base)"; setTextColor(fg); setHintTextColor(dim); setSingleLine(); setBackgroundColor(panel) }
         val x = coordinateInput("X")
@@ -115,19 +116,29 @@ class MainActivity : Activity() {
                 showMarkers()
             }
         }
-        content.addView(section("DISTANCE CALCULATOR"))
-        val currentX = coordinateInput("Your current X").apply { setText(prefs.getString("current_x", "")) }
-        val currentZ = coordinateInput("Your current Z").apply { setText(prefs.getString("current_z", "")) }
+
+        content.addView(section("MANUAL CURRENT POSITION"))
+        val currentX = coordinateInput("Current X").apply { setText(prefs.getString("current_x", "")) }
+        val currentY = coordinateInput("Current Y").apply { setText(prefs.getString("current_y", "")) }
+        val currentZ = coordinateInput("Current Z").apply { setText(prefs.getString("current_z", "")) }
         content.addView(currentX, params(dp(50)))
+        content.addView(currentY, params(dp(50)))
         content.addView(currentZ, params(dp(50)))
-        val calc = button("UPDATE DISTANCES", red, fg)
-        content.addView(calc, params(dp(50)))
-        calc.setOnClickListener {
+        val savePosition = button("SAVE CURRENT POSITION", red, fg)
+        content.addView(savePosition, params(dp(50)))
+        savePosition.setOnClickListener {
             val cx = currentX.text.toString().toDoubleOrNull()
+            val cy = currentY.text.toString().toDoubleOrNull()
             val cz = currentZ.text.toString().toDoubleOrNull()
-            if (cx == null || cz == null) Toast.makeText(this, "Enter valid X/Z.", Toast.LENGTH_SHORT).show()
-            else { prefs.edit().putString("current_x", cx.toString()).putString("current_z", cz.toString()).apply(); showMarkers() }
+            if (cx == null || cy == null || cz == null) {
+                Toast.makeText(this, "Enter valid current X/Y/Z.", Toast.LENGTH_SHORT).show()
+            } else {
+                prefs.edit().putString("current_x", cx.toString()).putString("current_y", cy.toString())
+                    .putString("current_z", cz.toString()).apply()
+                showMarkers()
+            }
         }
+
         content.addView(section("SAVED WAYPOINTS"))
         val markers = loadMarkers()
         if (markers.length() == 0) content.addView(panel("EMPTY", "No markers saved", "Add a waypoint above."))
@@ -138,8 +149,8 @@ class MainActivity : Activity() {
             val distText = if (cx != null && cz != null) {
                 val dx = item.optDouble("x") - cx
                 val dz = item.optDouble("z") - cz
-                "Distance: %.1f blocks".format(kotlin.math.sqrt(dx * dx + dz * dz))
-            } else "Distance: set your current X/Z above"
+                "Horizontal X/Z distance: %.1f blocks".format(kotlin.math.sqrt(dx * dx + dz * dz))
+            } else "Distance: save your current X/Z above"
             val state = if (item.optBoolean("enabled", true)) "Enabled in companion list" else "Disabled in companion list"
             val colorName = item.optString("color", "Crimson")
             val entry = panel("WAYPOINT • $colorName", item.optString("name"), "X ${item.optDouble("x")}   Y ${item.optDouble("y")}   Z ${item.optDouble("z")}\n$state\n$distText")
@@ -156,7 +167,7 @@ class MainActivity : Activity() {
                 showMarkers()
             }
         }
-        content.addView(label("Waypoint data is stored locally. Distance calculation and in-game display are not implemented.", 12, dim, false).apply { setPadding(0, dp(16), 0, 0) })
+        content.addView(label("Coordinates are manual, not read from Minecraft. Distances use horizontal X/Z only. The floating HUD is external to the game.", 12, dim, false).apply { setPadding(0, dp(16), 0, 0) })
         setContentView(root)
     }
 
