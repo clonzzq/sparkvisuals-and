@@ -15,7 +15,7 @@ An integrated Android client for Minecraft Bedrock 1.26.50.4, not a companion ov
 Continue only with benign standalone UI/configuration, persistent personal waypoint storage, and documented overlay drawing that does not access game state. No process injection, hooks, signature scans, patches, protection bypass, competitive gameplay helpers, item/entity detection, projectile prediction, or gameplay automation.
 
 ## Current implementation
-- Android companion APK build has succeeded previously; this is not a client.
+- Android companion APK build has succeeded previously; this is not a client. The external overlay can display manually entered X/Y/Z and nearest enabled waypoint horizontal distance; it refreshes from local preferences only and has no Minecraft connection.
 - Native settings and waypoint core plus host tests exist.
 - A static native test-panel scaffold was compiled previously, but it was not verified in-game and is not an integrated client.
 - The workflow that packaged the scaffold as a `.levipack` was removed. No package output is being treated as a deliverable.
