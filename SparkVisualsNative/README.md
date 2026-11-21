@@ -1,26 +1,28 @@
 # SparkVisuals Native
 
-Native Android Bedrock mod work-in-progress, separate from the companion APK.
+Native Android Bedrock prototype source, separate from the companion APK.
 
 ## Current state
-- Target: Minecraft Bedrock Android 1.26.50.4; device compatibility remains unverified.
+- Intended target: Minecraft Bedrock Android 1.26.50.4; device compatibility is unverified.
 - Candidate runtime: LeviLauncher Android + Preloader SDK 0.2.2, ARM64.
-- Native lifecycle registration exists but has not been verified in-game; HUD drawing is not connected.
-- Waypoint core supports validated create/edit, enable/disable, delete, lookup, and same-dimension distance calculation.
-- Waypoint persistence: versioned quoted format, transactional load.
-- **Client settings core added and wired into native mod lifecycle:** settings file loads from the mod config directory, initializes defaults when missing/invalid, and persists on unload. Includes HUD preference fields, crosshair/zoom, scale, and theme colors. Rendering is not connected yet.
-- CTest includes waypoint and settings serialization/validation test targets.
-- Runtime waypoint editor/HUD and rendering integration are not implemented or verified. No client APK or verified levipack is available yet.
+- Source registers a native lifecycle mod and contains a cosmetic status-panel draw-command call using the documented Mod Menu API. It displays a test label and explicitly states that game data is not connected.
+- The panel source includes scale, position, and color configuration. This is source-level only: native SDK compilation and Minecraft on-device rendering are not verified.
+- Waypoint/settings core supports validated persistent user data; CTest includes host tests.
+- No live game telemetry, runtime waypoint editor, or data-dependent HUD is implemented.
+- No APK or native mod package is produced or accepted as the requested deliverable.
 
-## Unit tests
+## Host unit tests
 ```sh
 cmake -S SparkVisualsNative -B build/native-tests -DBUILD_TESTING=ON
 cmake --build build/native-tests
 ctest --test-dir build/native-tests --output-on-failure
 ```
+The current core test cases were reproduced on host and passed (2/2). This does not compile the Preloader SDK integration.
 
-## Android packaging
-Requires CMake 3.22+, Ninja, Android SDK/NDK. ARM64 package generation is not verified on device.
+## API research
+The official Preloader Mod Menu API documents cosmetic HUD draw commands, font/image registration, movable HUD-editor elements, and HUD surface size:
+https://levimc.org/LeviLamina/developer_guides/android/api/mod_menu/
+Using this API still requires a native module loaded by LeviLauncher/Preloader, which is excluded from the user's strict standalone/no-separate-mod/no-injection deliverable.
 
-## Current implementation boundary
-This repository is building out supported native-mod APIs and visual/configuration foundations. No injection, game-memory scanning, patching, protection bypass, or combat automation.
+## Safety / release boundary
+No injection, hooks, signature scanning, patches, protection bypass, game-data access, competitive automation, or separate native package will be built or presented as a client. A client release requires exact target-version/device runtime proof.

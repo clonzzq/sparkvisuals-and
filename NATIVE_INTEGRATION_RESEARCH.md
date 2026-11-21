@@ -1,27 +1,30 @@
-# Native Android Bedrock research — 2026-11-20
+# Native Android Bedrock research — 2026-11-21
 
-## What is verified
-- **LeviLauncher Android:** https://github.com/LiteLDev/LeviLauncher-Android. Apache-2.0. Release v1.5.24 (2026-09-16) added Minecraft 1.26.50 support; v1.7.1 was the latest observed release (2026-11-16). This is version-family support only; no exact 1.26.50.4 device test.
-- **Preloader native-mod SDK:** https://levimc.org/LeviLauncher/android/guide/developer and https://github.com/LiteLDev/preloader-android. Native modules execute in the game runtime and are loaded via LeviLauncher. Public APIs cover lifecycle/config/input/menu/drawing, but no public live game-state API was verified.
-- **BedrockTools:** https://github.com/QYCottage/BedrockTools. MIT license checked; v1.5.12 observed (2026-11-07). Native C++20 ARM64 modules, 51 modules in current README; requires LeviLauncher/Preloader and separate native-mod package. Reference only; not adopted.
-- **LuaClient Mobile:** https://github.com/KauanGitpy/LuaClient-Android. v0.1.2 public fork, Apache-2.0; own README/status describes launcher, native core, UI modules and local overlays. Its status warns that Android 15 + Minecraft 1.26.45.x uses safe mode and additional native modules are unavailable. Exact target version unknown/unverified.
-- **Xelo-Client:** https://github.com/Xelo-Client/Xelo-Client. GPL-3.0; Android launcher/client repository. README feature list is launcher-oriented and marks in-game mod menu as not implemented; compatibility with 1.26.50.4 is not verified.
+## Verified findings
+- **LeviLauncher Android:** https://github.com/LiteLDev/LeviLauncher-Android. Latest observed release v1.7.1 (2026-11-16). v1.5.24 added Minecraft 1.26.50 family support; this is not exact 1.26.50.4/device verification.
+- **Preloader native-mod SDK:** https://github.com/LiteLDev/preloader-android and https://levimc.org/LeviLauncher/android/guide/developer. Public quick-start pins SDK tag 0.2.2 and uses a native mod loaded by LeviLauncher. Its packaging example outputs a separately imported `.levipack`.
+- **Cosmetic HUD API (newly confirmed from official docs):** https://levimc.org/LeviLamina/developer_guides/android/api/mod_menu/ documents `pl::modmenu::submitDrawCommands()`, font/image registration, `submitHudEditorElements()`, and `getHudSurfaceSize()`. The API supports module toggles/configuration and cosmetic draw-command overlays. Documentation was last updated 2026-11-16. This API is for a native module loaded by LeviLauncher/Preloader; it is not a standalone Bedrock client SDK and does not expose verified live game data.
+- **Native Quick Start/template:** https://github.com/LiteLDev/LeviLauncher-Android/tree/main/examples/full-cpp-mod and https://github.com/QYCottage/levilauncher-android-mod-template. The examples require a native module and package/import workflow. Not adopted as the final route because the user excludes separately imported mod packages and code injection/native game modification.
+- **BedrockTools:** https://github.com/QYCottage/BedrockTools. Current README describes 51 modules, public game wrappers and event API; its version-specific signatures/offsets are required to connect modules to game data. No source copied or integration attempted because that crosses the excluded game-internal hook/signature boundary.
+- **Creator APIs:** official Bedrock Creator APIs remain content/pack-based and are excluded.
+- **External Android overlay:** not inside Minecraft and has no automatic live game-data feed; not accepted as a client.
 
-## Excluded integration routes
-- Creator Script API for Bedrock 1.26.50 is not a standalone Android client SDK; packs/add-ons are forbidden by user.
-- Native-mod loader/package workflows do not meet the user's standalone integrated-client requirement.
-- External Android overlay is not in-game and has no live Minecraft data source.
-- No process injection, hooks, signature scanning, patches, protection bypass, or competitive automation will be implemented.
+## Repository source audit
+- `SparkVisualsNative/src/SparkVisualsMod.cpp` already contains a source-level prototype that submits a cosmetic rectangular status panel through `submitDrawCommands()`, and exposes HUD scale/position/color configuration. This is an API call in source, **not proof it builds or appears in Minecraft**.
+- The repository's native CMake project builds host tests when `BUILD_TESTING` is enabled. It does not currently build the native Android SDK module in CI. Exact native SDK/Android build and on-device runtime remain unverified.
+- Host C++ tests for marker/settings core were manually reproduced from the current checked-in headers/tests and passed locally: 2/2. This does not validate the native SDK integration.
+- Current companion APK CI succeeds, but those APKs are companion app artifacts, not SparkVisuals in-game client APKs.
 
-## SparkVisuals status
-Companion APK and native scaffold are not the client. Core marker/settings tests and previous CI compilation/package checks are evidence only for those isolated components. The in-game runtime, target version, and any HUD/data feature have not been demonstrated.
+## Feasibility conclusion
+A documented API now confirms that a cosmetic HUD panel/draw commands can be created in the LeviLauncher native-mod ecosystem without game-state access. However, it still requires the native module loading/package route (LeviLauncher + Preloader), which is excluded by the user's strict no-separate-mod/no-injection integrated-client requirement. It also cannot provide coordinates, armor, potion state, FPS/ping, items/entities or other live Minecraft telemetry through the documented public HUD API alone.
 
-## Conclusion / next research
-No route verified so far satisfies all of: standalone integrated APK, no packs/add-ons or separately imported mod package, exact Minecraft 1.26.50.4 compatibility, and live game-data access. Continue checking for a documented supported client SDK/runtime; do not misrepresent an external overlay or launcher as a client.
+No implementation or build artifact was created from this discovery. Do not re-label the native scaffold or companion as the requested client. Continue researching a supported standalone integrated client SDK/runtime and exact 1.26.50.4/device compatibility.
 
-
-## 2026-11-21 — additional candidate review
-- **Flarial Android:** a separate Android client is listed on Google Play (package `xyz.flarial.client`). Recent third-party release listings report builds for Bedrock 26.50/26.51/26.52, but they are not the official compatibility matrix and do not verify exact 1.26.50.4/device behavior. It is a possible user-side reference/test candidate, not a SparkVisuals code base: the Android APK source/license was not found publicly. Flarial's public `dll-oss` is AGPL-3.0, describes a Windows build guide, and explicitly says some portions remain private; that license does not automatically cover its Android APK.
-- Official client page/store: https://flarial.xyz/ and https://play.google.com/store/apps/details?id=xyz.flarial.client . Public desktop source: https://github.com/flarialmc/dll-oss .
-- **Bedrock protocol client library:** https://github.com/M9CHKO/bedrock-protocol is a C++ networking/protocol library (RakNet/auth/packet handling), not a full Android Bedrock renderer/client and not an SDK for augmenting the installed Minecraft app; it does not meet this goal.
-- No newly found supported SDK changes the feasibility conclusion. Flarial may be a practical existing client to test for version compatibility, but it is not source-available as a SparkVisuals integration base and exact patch compatibility remains unverified.
+## Sources
+- LeviLauncher releases: https://github.com/LiteLDev/LeviLauncher-Android/releases
+- Native quick start: https://levimc.org/LeviLauncher/android/guide/developer
+- Mod Menu API: https://levimc.org/LeviLamina/developer_guides/android/api/mod_menu/
+- Preloader SDK: https://github.com/LiteLDev/preloader-android
+- Official example: https://github.com/LiteLDev/LeviLauncher-Android/tree/main/examples/full-cpp-mod
+- Android template: https://github.com/QYCottage/levilauncher-android-mod-template
+- BedrockTools: https://github.com/QYCottage/BedrockTools

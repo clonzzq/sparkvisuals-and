@@ -31,3 +31,12 @@
 - Reviewed the C++ Bedrock protocol library M9CHKO/bedrock-protocol at a high level. It is networking/protocol infrastructure, not a renderer or supported game-client HUD SDK, so it cannot replace the existing game for this project.
 - New research does not produce a supported integration path under the no-packs/no-addons/no-unsupported-game-modification constraints.
 - Sources: https://flarial.xyz/ ; https://play.google.com/store/apps/details?id=xyz.flarial.client ; https://github.com/flarialmc/dll-oss ; https://github.com/M9CHKO/bedrock-protocol
+
+
+## 2026-11-21 — official cosmetic HUD API verification
+- Fresh official docs confirm LeviLauncher/Preloader Mod Menu supports `submitDrawCommands()`, font/image registration, `submitHudEditorElements()`, and `getHudSurfaceSize()`; docs last updated Nov 16, 2026. This is a real supported cosmetic draw API in the native-mod ecosystem, not a public live-game telemetry API.
+- Native quick-start pins Preloader SDK 0.2.2 and demonstrates a separately imported `.levipack`; this loader/package route remains excluded by the user's no-separate-module/no-injection requirement.
+- Source audit found `SparkVisualsNative/src/SparkVisualsMod.cpp` already submits a cosmetic test panel with scale/position/colors. This is only a source-level API call; native SDK build and in-game rendering have not been verified. It explicitly has no Minecraft game data.
+- Host tests for current marker/settings core were reproduced from checked-in source/test files and passed locally: 2/2. This is not native SDK or device verification. GitHub CI currently builds the companion APK, not the native Preloader module.
+- No code/package was created from this discovery; updating feasibility docs only to correct the status and record the boundary.
+- References: https://levimc.org/LeviLamina/developer_guides/android/api/mod_menu/ ; https://levimc.org/LeviLauncher/android/guide/developer ; https://github.com/LiteLDev/LeviLauncher-Android/tree/main/examples/full-cpp-mod ; https://github.com/LiteLDev/preloader-android

@@ -1,27 +1,29 @@
-# SparkVisuals — client architecture (updated 2026-11-20)
+# SparkVisuals — client architecture (updated 2026-11-21)
 
 ## Goal and constraints
-A real in-game Android client for Minecraft Bedrock 1.26.50.4. The companion APK is not the deliverable. The user explicitly excludes Resource Packs, Behavior Packs, Creator Add-ons, and separately imported native-mod packages.
+A real integrated Android client for Minecraft Bedrock 1.26.50.4. Companion APK is not the deliverable. User excludes Resource Packs, Behavior Packs, Creator Add-ons, separately imported native-mod packages, and code injection/hooks.
 
 ## Routes examined
-- **LeviLauncher Android / Preloader:** https://github.com/LiteLDev/LeviLauncher-Android and https://levimc.org/LeviLauncher/android/guide/developer. Version 1.5.24 added Minecraft 1.26.50 support; current release observed v1.7.1 (2026-11-16). Native mods run in the game runtime and are loaded through the launcher. This is not a standalone no-loader client. Exact 1.26.50.4 device compatibility is not verified.
-- **BedrockTools:** https://github.com/QYCottage/BedrockTools. MIT license; native C++ Android ARM64 modules for LeviLauncher/Preloader; its releases use a separate native-mod package. Useful as ecosystem reference, not adopted as the requested deliverable.
-- **LuaClient Mobile:** https://github.com/KauanGitpy/LuaClient-Android. Public v0.1.2 launcher fork, Apache-2.0; its README/status describes ARM64, module UI, local overlay/Zoom and compatibility safe mode. Its own status lists Minecraft 1.26.45.x on Android 15 as safe mode where additional native modules are unavailable. Exact 1.26.50.4 is not verified; no code copied.
-- **Xelo-Client:** https://github.com/Xelo-Client/Xelo-Client. Android client/launcher source, GPL-3.0. Its README advertises launcher/config/theme/version management and marks the in-game mod menu as not implemented. Not target-version verified.
+- **LeviLauncher Android / Preloader:** https://github.com/LiteLDev/LeviLauncher-Android and https://levimc.org/LeviLauncher/android/guide/developer. Release v1.5.24 added Minecraft 1.26.50 family support; latest observed release v1.7.1 (2026-11-16). Exact 1.26.50.4/device compatibility is not verified. Native modules load through LeviLauncher/Preloader; not a standalone client.
+- **Public cosmetic Mod Menu API:** https://levimc.org/LeviLamina/developer_guides/android/api/mod_menu/ documents module config/toggles, floating buttons, `submitDrawCommands()`, font/image registration, HUD-editor elements, and HUD surface size. This establishes a supported API surface for cosmetic draw commands, not game telemetry. Using it still requires a native module loaded through the launcher and is excluded by the user's no-separate-module/no-injection constraints.
+- **BedrockTools:** https://github.com/QYCottage/BedrockTools. MIT; native C++ Android mod for LeviLauncher/Preloader with wrappers, signatures/offsets and event API. Requires native-module loading and game-internal version-specific interfaces; not adopted.
+- **LuaClient Mobile:** https://github.com/KauanGitpy/LuaClient-Android. Public v0.1.2 launcher fork, Apache-2.0; exact target compatibility unverified.
+- **Xelo-Client:** https://github.com/Xelo-Client/Xelo-Client. GPL-3.0; launcher-oriented, in-game menu marked not implemented; exact target unverified.
+- **Flarial Android:** https://flarial.xyz/ and https://play.google.com/store/apps/details?id=xyz.flarial.client. Android app listing is a possible existing client for user-side evaluation; source/license and exact patch/device compatibility not established, so not a SparkVisuals base.
 
 ## API and technical limits
-- Official Minecraft Creator APIs for 1.26.50 are creator-content APIs, not a standalone client SDK; using those requires packs/add-ons, excluded by the user.
-- Public LeviLauncher native-mod documentation provides lifecycle/config/input/menu and cosmetic drawing, but no verified public API for reading live game state. Data-dependent features require unsupported game-internal integration, which will not be implemented here.
-- Android system overlays are external to Minecraft and can be restricted by Android 12+; they do not become a connected in-game HUD and are not an acceptable substitute.
+- Official Minecraft Creator APIs are content/pack-based and excluded.
+- LeviLauncher Mod Menu public API can draw a cosmetic overlay, but does not provide a verified public live-game-state API. Native mod loading is not the standalone/no-separate-module route requested.
+- BedrockTools and other native mods may read game data through version-specific hooks/signatures/offsets; those mechanisms are excluded from implementation.
+- Android system overlays are external to Minecraft and are not an acceptable substitute.
 
 ## Current status
-- The Android companion APK builds; its overlay shows placeholders and is outside Minecraft.
-- Native source/settings/waypoint core exist; not a verified in-game client. No game device/runtime test.
-- The `.levipack` packaging workflow was removed to prevent this loader-package scaffold from being mistaken for the required client.
-- No SparkVisuals in-game client APK exists.
+- Companion APK builds; its overlay is outside Minecraft and reads only manually saved local coordinates/markers.
+- Native core (settings/waypoints) and host tests exist; source has a cosmetic Mod Menu draw-command prototype. Native SDK build and in-game runtime are not verified.
+- No native mod package is generated or accepted as the deliverable. No SparkVisuals integrated client APK exists.
 
 ## Safe work scope
-Cosmetic UI, settings, personal marker persistence, and standalone overlay UX only. No process injection, hooks, signature scans, patches, protection bypass, game-state item/entity detection, projectile prediction, or gameplay automation.
+Standalone UI/config, personal waypoint storage and harmless UI only. No injection, hooks, signature scans, patches, protection bypass, game-state item/entity detection, projectile prediction, or gameplay automation.
 
 ## Release gate
-Never label a shell, companion, native scaffold, or package as the client. A client milestone requires an integrated client launch, exact game version/device test, and demonstrated functionality.
+Never label a shell, companion, native scaffold, or package as the client. A client milestone requires integrated launch, exact game version/device test, and demonstrated functionality.
