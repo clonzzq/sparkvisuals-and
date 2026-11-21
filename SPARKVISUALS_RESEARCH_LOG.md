@@ -15,3 +15,12 @@
 - LuaClient Mobile: https://github.com/KauanGitpy/LuaClient-Android
 - Xelo-Client: https://github.com/Xelo-Client/Xelo-Client
 - SparkVisuals commits: https://github.com/clonzzq/sparkvisuals-and/commits/main
+
+
+## 2026-11-21 — companion overlay improvement
+- Audited the current Android app source: marker CRUD and local storage were already real; module toggles remain preference flags only. Existing floating HUD was static placeholder text.
+- Implemented manual current X/Y/Z entry and save. Waypoint distances in the app remain horizontal X/Z only.
+- Reworked the external overlay to read saved manual coordinates and waypoint JSON, show the nearest enabled waypoint's horizontal distance, and refresh locally every 2 seconds. It still does not read Minecraft process/game state and is not an in-game client.
+- Updated app README to describe this capability honestly. Android CI will verify compilation; no Android device or exact Minecraft 1.26.50.4 runtime test is available.
+- Research update: official creator HUD APIs are pack/add-on APIs and excluded by the user's constraint; official Minecraft deep links are documented as internal/unstable and are not a HUD SDK. No supported standalone client SDK found.
+- References: https://learn.microsoft.com/en-us/minecraft/creator/documents/update1.21?view=minecraft-bedrock-stable ; https://github.com/MicrosoftDocs/minecraft-creator/blob/main/creator/Reference/Content/deep-links.md
