@@ -18,3 +18,10 @@ Companion APK and native scaffold are not the client. Core marker/settings tests
 
 ## Conclusion / next research
 No route verified so far satisfies all of: standalone integrated APK, no packs/add-ons or separately imported mod package, exact Minecraft 1.26.50.4 compatibility, and live game-data access. Continue checking for a documented supported client SDK/runtime; do not misrepresent an external overlay or launcher as a client.
+
+
+## 2026-11-21 — additional candidate review
+- **Flarial Android:** a separate Android client is listed on Google Play (package `xyz.flarial.client`). Recent third-party release listings report builds for Bedrock 26.50/26.51/26.52, but they are not the official compatibility matrix and do not verify exact 1.26.50.4/device behavior. It is a possible user-side reference/test candidate, not a SparkVisuals code base: the Android APK source/license was not found publicly. Flarial's public `dll-oss` is AGPL-3.0, describes a Windows build guide, and explicitly says some portions remain private; that license does not automatically cover its Android APK.
+- Official client page/store: https://flarial.xyz/ and https://play.google.com/store/apps/details?id=xyz.flarial.client . Public desktop source: https://github.com/flarialmc/dll-oss .
+- **Bedrock protocol client library:** https://github.com/M9CHKO/bedrock-protocol is a C++ networking/protocol library (RakNet/auth/packet handling), not a full Android Bedrock renderer/client and not an SDK for augmenting the installed Minecraft app; it does not meet this goal.
+- No newly found supported SDK changes the feasibility conclusion. Flarial may be a practical existing client to test for version compatibility, but it is not source-available as a SparkVisuals integration base and exact patch compatibility remains unverified.
