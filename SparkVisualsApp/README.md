@@ -6,9 +6,9 @@ Standalone Kotlin companion application. **Not an integrated Minecraft client.**
 - Black/crimson dashboard and visual-settings screens.
 - Play button launches the official Minecraft Bedrock Android package, if installed.
 - HUD preference switches saved locally. They are preferences only and do not render in Minecraft.
-- Personal waypoint list with name and X/Y/Z, edit/delete and local persistence.
-- Manual horizontal distance calculator to saved waypoints.
-- Optional draggable Android system overlay preview (permission required). It is outside Minecraft and does not read FPS or coordinates from the game.
+- Personal waypoint list with name, X/Y/Z, color, enable/disable, edit/delete and local persistence.
+- Manual current X/Y/Z input and horizontal (X/Z) distance calculation to saved waypoints.
+- Optional draggable Android system overlay (permission required) showing manually entered coordinates and nearest enabled waypoint distance. It is outside Minecraft and never reads live game data.
 
 ## Build APK
 GitHub Actions: https://github.com/clonzzq/sparkvisuals-and/actions
