@@ -26,3 +26,10 @@
 - Mojang's stable changelog shows 64 protocol changes from 1.26.51 (2193) to 1.26.60 (2225): 8 packets added and 56 changed. Examples: ActorEvent enum values renumbered, BuildPlatform/GameType enums changed, AddActor/AddPlayer gained passenger-block data, camera fields became optional, environment-attribute and sound-event packet schemas changed.
 - This confirms Cinnabar target 1.26.60 cannot be downgraded to 1.26.50.4 by changing the version constant. Actual code-level backport estimate remains unknown; no compatibility code was written.
 - Source: https://mojang.github.io/bedrock-protocol-docs/changelog/ (1.26.60 and 1.26.51 sections).
+## 2026-11-23 — Gato Mobile MITM client and protocol discrepancy
+- Checked **Gato-Client-Mobile** repository/README: Android APK + JVM relay, MITM proxy architecture, no process memory modification/root claimed. It is a separate utility/proxy client, not an integrated HUD/client inside the official Minecraft UI; therefore excluded by the user's goal. No APK/release asset, CI build result, or physical-device test was verified in this scan.
+- Its README claims Bedrock **1.26.50 protocol 2192**. Mojang's stable protocol changelog/reference says stable **1.26.50 = protocol 2193**; protocol **2192** belongs to preview metadata, so Gato's version claim is inconsistent and cannot be accepted as verified compatibility for 1.26.50.4.
+- Repository license is AGPL-3.0 and it includes GPLv3-derived MuCuteClient/MuCuteRelay parts; not copied or forked. Any reuse would require separate license/compatibility review.
+- **BedrockParty LAN bridge** independently reports physical Android + BDS validation on 1.26.50/protocol 2193. This is evidence that ordinary Android Bedrock networking at that version is testable; it is only a server/LAN bridge and provides no in-game HUD/client interface.
+- Status: research only, no SparkVisuals code, APK, or client changes.
+- Sources: https://github.com/elgatolinux/Gato-Client-Mobile ; https://mojang.github.io/bedrock-protocol-docs/changelog/ ; https://mojang.github.io/bedrock-protocol-docs/1.26.50/ ; https://github.com/dockopslab/bedrockparty-lan-bridge
