@@ -16,3 +16,14 @@
 - https://github.com/M9CHKO/bedrock-protocol
 - https://mojang.github.io/bedrock-protocol-docs/1.26.50/
 - https://github.com/clonzzq/sparkvisuals-and/actions/runs/44899111488
+
+
+## 2026-11-23 — Cinnabar Android standalone client candidate
+- Verified Cinnabar: Rust independent Bedrock client plus Go core; Android arm64 APK packaging is explicitly experimental and Android 8+ / Vulkan. Both nightly and v0.2.1 release metadata contain Android APK assets; no SparkVisuals device test was done.
+- v0.2.1 target manifest: 1.26.60 / wire protocol 2225. Mojang's 1.26.50 protocol reference is 2193 (the exact 1.26.50.4 hotfix was not separately confirmed). Not compatible with SparkVisuals target as-is; backport work is unestimated.
+- PolyForm Noncommercial 1.0.0; personal hobby/research allowed, commercial use prohibited. First-run downloads official vanilla resource-pack assets under EULA acceptance. Literal no-resource-pack policy would exclude it.
+- Personal-mod API is sandboxed WASM and can observe player/world, render HUD/world and respond to input. Separate imported mod files are excluded; a derived client would need built-in features. Official Cinnabar Mod advertises 39 modules but is a separate imported WASM and its source was not reused.
+- Status: promising standalone architecture partial match; research only. No code or assets copied, no fork, no APK/device test.
+- Full report: [CINNABAR_ANDROID_CANDIDATE.md](CINNABAR_ANDROID_CANDIDATE.md).
+
+Sources: https://github.com/cinnabar-mc/cinnabar ; https://github.com/cinnabar-mc/cinnabar/blob/dev/docs/android.md ; https://github.com/cinnabar-mc/cinnabar/blob/v0.2.1/assets/bedrock-target.json ; https://github.com/cinnabar-mc/cinnabar/blob/v0.2.1/LICENSE ; https://cinnabar.gg/mod/ ; https://mojang.github.io/bedrock-protocol-docs/1.26.50/ ; https://mojang.github.io/bedrock-protocol-docs/changelog/

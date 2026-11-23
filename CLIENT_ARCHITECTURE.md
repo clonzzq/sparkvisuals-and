@@ -27,3 +27,11 @@ Standalone UI/config, personal waypoint storage and harmless UI only. No injecti
 
 ## Release gate
 Never label a shell, companion, native scaffold, or package as the client. A client milestone requires integrated launch, exact game version/device test, and demonstrated functionality.
+
+
+## Cinnabar Android candidate — research only (2026-11-23)
+- Cinnabar is a newly verified independent Bedrock client with experimental Android arm64-v8a APK packaging and nightly/beta APK releases. It is a standalone Rust client with a Go network/auth core; no injection into the official Minecraft process.
+- The inspected v0.2.1 target is 1.26.60 / protocol 2225; SparkVisuals target is 1.26.50.4 / 1.26.50 family protocol 2193. No backwards compatibility is established.
+- License is PolyForm Noncommercial 1.0.0; personal hobby use is permitted, commercial use is not. First-run preparation downloads Mojang's vanilla sample resource pack after EULA acceptance; a literal ban on any resource-pack source would exclude this candidate.
+- Its WASM mod SDK exposes local player/world observations and HUD/world drawing, but imported modules are separate packages and excluded. A future fork would need built-in SparkVisuals modules in client source. No code was copied or forked.
+- Full assessment: [CINNABAR_ANDROID_CANDIDATE.md](CINNABAR_ANDROID_CANDIDATE.md). Research only; no exact-version/device proof.
