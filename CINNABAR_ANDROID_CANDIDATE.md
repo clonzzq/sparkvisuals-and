@@ -41,3 +41,9 @@ Research only. No Cinnabar code, APK, module, or assets have been copied, forked
 - https://cinnabar.gg/mod/
 - https://mojang.github.io/bedrock-protocol-docs/1.26.50/
 - https://mojang.github.io/bedrock-protocol-docs/changelog/
+
+
+## Protocol backport sizing — 2026-11-23
+Mojang's stable protocol changelog shows that Bedrock 1.26.60 (2225) introduced **64 changes** compared with 1.26.51 (2193): 8 new packets and 56 packet/schema changes. Examples include broad ActorEvent enum renumbering, BuildPlatform/GameType value changes, added passenger-block data in AddActor/AddPlayer, camera-field optionality, environment-attribute schema changes, and a changed sound-event structure. This confirms that moving Cinnabar back to 1.26.50.4 is not a version-string downgrade; protocol/data changes are substantial. This is a changelog-based scope signal, not a full code diff or estimate; no compatibility code was written.
+
+Source: https://mojang.github.io/bedrock-protocol-docs/changelog/ (stable 1.26.60 and 1.26.51 sections)

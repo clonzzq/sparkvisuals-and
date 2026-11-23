@@ -27,3 +27,5 @@
 - Full report: [CINNABAR_ANDROID_CANDIDATE.md](CINNABAR_ANDROID_CANDIDATE.md).
 
 Sources: https://github.com/cinnabar-mc/cinnabar ; https://github.com/cinnabar-mc/cinnabar/blob/dev/docs/android.md ; https://github.com/cinnabar-mc/cinnabar/blob/v0.2.1/assets/bedrock-target.json ; https://github.com/cinnabar-mc/cinnabar/blob/v0.2.1/LICENSE ; https://cinnabar.gg/mod/ ; https://mojang.github.io/bedrock-protocol-docs/1.26.50/ ; https://mojang.github.io/bedrock-protocol-docs/changelog/
+
+- Protocol backport sizing check: Mojang changelog lists 64 stable protocol changes in 1.26.60 vs 1.26.51/1.26.50 family protocol 2193 (8 added packets, 56 changed). Changes include enums, fields, and packet schemas; the port is substantial, not a constant edit. No code ported. Source: https://mojang.github.io/bedrock-protocol-docs/changelog/

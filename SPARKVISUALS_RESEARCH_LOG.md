@@ -20,3 +20,9 @@
 - Cinnabar's WASM personal-mod API provides player/world observations, HUD/presentation and world draw, but the modules are separately imported; that workflow is excluded. The official separate mod advertises 39 modules but source is not public in the inspected listing and was not copied. Built-in SparkVisuals functionality would need to be compiled into the client source, not shipped as a separate module.
 - No code copied, forked, or device-tested; research only. Full assessment is in CINNABAR_ANDROID_CANDIDATE.md.
 - Sources: https://github.com/cinnabar-mc/cinnabar ; https://github.com/cinnabar-mc/cinnabar/blob/dev/docs/android.md ; https://github.com/cinnabar-mc/cinnabar/blob/v0.2.1/assets/bedrock-target.json ; https://github.com/cinnabar-mc/cinnabar/blob/v0.2.1/LICENSE ; https://cinnabar.gg/mod/ ; https://mojang.github.io/bedrock-protocol-docs/1.26.50/ ; https://mojang.github.io/bedrock-protocol-docs/changelog/
+
+
+## 2026-11-23 — protocol backport scope checked
+- Mojang's stable changelog shows 64 protocol changes from 1.26.51 (2193) to 1.26.60 (2225): 8 packets added and 56 changed. Examples: ActorEvent enum values renumbered, BuildPlatform/GameType enums changed, AddActor/AddPlayer gained passenger-block data, camera fields became optional, environment-attribute and sound-event packet schemas changed.
+- This confirms Cinnabar target 1.26.60 cannot be downgraded to 1.26.50.4 by changing the version constant. Actual code-level backport estimate remains unknown; no compatibility code was written.
+- Source: https://mojang.github.io/bedrock-protocol-docs/changelog/ (1.26.60 and 1.26.51 sections).
