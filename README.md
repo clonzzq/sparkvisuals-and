@@ -23,6 +23,7 @@
 - [Android feasibility research](SPARKVISUALS_ANDROID_FEASIBILITY_2026-11-19.md)
 - [Research log](SPARKVISUALS_RESEARCH_LOG.md)
 - [Cinnabar Android candidate assessment](CINNABAR_ANDROID_CANDIDATE.md) — standalone Android client candidate, but target-version/license/asset-policy gaps remain
+- [Zuri Android portability assessment](ZURI_ANDROID_CANDIDATE.md) — MIT/Bevy client, incomplete and Android target not verified
 
 ## Scope
 Standalone cosmetic UI/configuration and personal waypoint storage only. No game-state item/entity detection, projectile prediction, competitive helpers, gameplay automation, undocumented hooks, process injection, signature scanning, patches, or protection bypass.
