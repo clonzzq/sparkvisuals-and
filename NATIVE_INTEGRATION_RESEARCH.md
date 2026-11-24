@@ -36,3 +36,11 @@ Sources: https://github.com/cinnabar-mc/cinnabar ; https://github.com/cinnabar-m
 - BedrockParty reports physical Android clients joining BDS at stable 1.26.50/protocol 2193; it is an interoperability bridge, not an in-game mod/client UI.
 - No new viable implementation path within the user's no-pack/no-addon/no-injection constraints; no code changes.
 Sources: https://github.com/elgatolinux/Gato-Client-Mobile ; https://mojang.github.io/bedrock-protocol-docs/changelog/ ; https://mojang.github.io/bedrock-protocol-docs/1.26.50/ ; https://github.com/dockopslab/bedrockparty-lan-bridge
+
+
+## 2026-11-24 — BedrockTools (native in-process mod candidate) assessed, not adopted
+- QYCottage/BedrockTools is a genuine Android ARM64 C++20 LeviLauncher/Preloader native mod with 51 modules including customizable HUD (Armor/Potion/Coords/Ping/Compass/Speed/etc.), Zoom, camera/visual modules, module settings and launcher menu integration. Its v1.5.6 target manifest explicitly says `1.26.5X.X`; v1.5.12 latest targets `1.26.6X.X`. Exact target build .50.4 and device runtime have not been verified by this project.
+- This is a meaningful architectural match to the desired *in-game* feature surface, but it requires native code loaded into Minecraft's process by LeviLauncher. The user expressly excludes injection/hooks/process modification, so this path is not usable under the current constraints and we will not develop or instruct it.
+- Licensing discrepancy: repository LICENSE + GitHub metadata show MIT; README at v1.5.6 says GPL-3.0. Source reuse is paused until upstream resolves which license applies and dependencies are audited.
+- No code/assets reused; no APK/CI or phone test; no change to SparkVisuals native game integration.
+Sources: https://github.com/QYCottage/BedrockTools/releases/tag/v1.5.6 ; https://github.com/QYCottage/BedrockTools/releases/tag/v1.5.12 ; https://github.com/QYCottage/BedrockTools/blob/v1.5.6/levimod.json ; https://github.com/QYCottage/BedrockTools/blob/v1.5.6/README.md ; https://github.com/QYCottage/BedrockTools/blob/main/LICENSE ; https://levimc.org/LeviLauncher/concepts/mod-loading
