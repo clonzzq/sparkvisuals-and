@@ -23,6 +23,11 @@
 | CaramelClient | Launcher for imported official APK + native loader | Version management, not own engine | Android APK | Apache-2.0; native mod packages | Excluded by no-addons/no-loader requirement |
 | Limerence/Selaura | In-process Bedrock modification framework | Game-specific internals | Android ARM64 listed | GPL-3.0; requires modified/loaded client path | Excluded |
 
+## Android portability evidence (upstream components only)
+- Upstream **winit 0.30** documents an Android backend using `android-activity` 0.6 glue and a native Activity/GameActivity entrypoint/lifecycle. That confirms winit can target Android, not that Acacia's viewer currently builds there.
+- Upstream **wgpu 30** lists Vulkan as first-class on Linux/Android and OpenGL ES as best-effort. Android Vulkan hardware/driver support still varies by device.
+- Acacia itself has no Android packaging instructions, app entrypoint, target-specific build configuration, APK or device evidence in the inspected tree. Porting would require lifecycle glue, surface management, touch/IME, app packaging and compatibility testing.
+
 ## What remains unverified
 - Whether Acacia's current workspace can compile for `aarch64-linux-android` without source changes.
 - Whether its winit event loop, Vulkan/wgpu surface, auth, networking, and input stack are usable on Android.
