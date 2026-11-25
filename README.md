@@ -11,7 +11,7 @@
 
 ## Repository
 - Companion prototype: `SparkVisualsApp/`
-- Android prototype build: `.github/workflows/android-apk.yml` and `.github/workflows/sparkvisuals-android.yml`
+- Android prototype build: `.github/workflows/android-apk.yml` (single verified workflow)
 - No native-mod package or native-loader integration workflow remains.
 
 ## Research
