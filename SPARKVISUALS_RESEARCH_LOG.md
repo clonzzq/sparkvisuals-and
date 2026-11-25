@@ -82,3 +82,9 @@ Sources: https://levimc.org/faq/play/android/usage/ ; https://levimc.org/LeviLau
 - This supports a possible port at the library/platform level only. Acacia viewer itself has no Android entrypoint, Gradle/APK packaging, Android lifecycle/input integration or device build in its repository. No compile or port was attempted.
 - The strict vanilla-resource-pack requirement remains a disqualifier for Acacia renderer assets. No source code copied.
 - Sources: https://docs.rs/winit/latest/winit/platform/android/ ; https://docs.rs/crate/wgpu/latest ; https://developer.android.com/games/develop/vulkan/native-engine-support
+
+
+## 2026-11-25 — Acacia viewer project-level Android blockers
+- Inspected the viewer's `main.rs`, `app/window.rs`, `input.rs`, and Cargo manifest. It is a full desktop viewer using a winit event loop, renderer, network thread and UI, but the current event handlers accept keyboard/mouse/cursor/scroll only; there is no touch handling or on-screen control layout.
+- Cargo manifest does not enable winit's Android Activity glue feature or declare Android entrypoint/app packaging. Therefore upstream winit/wgpu Android support is only platform-library evidence, not an Acacia Android port.
+- Updated candidate assessment and architecture docs. No source copied, fork/build or APK.
