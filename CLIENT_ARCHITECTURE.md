@@ -1,37 +1,30 @@
-# SparkVisuals — client architecture (updated 2026-11-21)
+# SparkVisuals — client architecture and feasibility (2026-11-25)
 
-## Goal and constraints
-A real integrated Android client for Minecraft Bedrock 1.26.50.4. Companion APK is not the deliverable. User excludes Resource Packs, Behavior Packs, Creator Add-ons, separately imported native-mod packages, and code injection/hooks.
+## Goal and hard constraints
+A real standalone Android client for Bedrock 1.26.50.4, not a companion/launcher/overlay. User excludes Resource Packs, Behavior Packs, Creator Add-ons, separately imported mod packages, process injection/hooks, patches, and protection bypass.
 
-## Routes examined
-- **LeviLauncher Android / Preloader:** https://github.com/LiteLDev/LeviLauncher-Android and https://levimc.org/LeviLauncher/android/guide/developer. Release v1.5.24 added Minecraft 1.26.50 family support; latest observed release v1.7.1 (2026-11-16). Exact 1.26.50.4/device compatibility is not verified. Native modules load through LeviLauncher/Preloader; not a standalone client.
-- **Public cosmetic Mod Menu API:** https://levimc.org/LeviLamina/developer_guides/android/api/mod_menu/ documents module config/toggles, floating buttons, `submitDrawCommands()`, font/image registration, HUD-editor elements, and HUD surface size. This establishes a supported API surface for cosmetic draw commands, not game telemetry. Using it still requires a native module loaded through the launcher and is excluded by the user's no-separate-module/no-injection constraints.
-- **BedrockTools:** https://github.com/QYCottage/BedrockTools. MIT; native C++ Android mod for LeviLauncher/Preloader with wrappers, signatures/offsets and event API. Requires native-module loading and game-internal version-specific interfaces; not adopted.
-- **LuaClient Mobile:** https://github.com/KauanGitpy/LuaClient-Android. Public v0.1.2 launcher fork, Apache-2.0; exact target compatibility unverified.
-- **Xelo-Client:** https://github.com/Xelo-Client/Xelo-Client. GPL-3.0; launcher-oriented, in-game menu marked not implemented; exact target unverified.
-- **Flarial Android:** https://flarial.xyz/ and https://play.google.com/store/apps/details?id=xyz.flarial.client. Android app listing is a possible existing client for user-side evaluation; source/license and exact patch/device compatibility not established, so not a SparkVisuals base.
+## Current project state
+- `SparkVisualsApp/` is a companion prototype only. It launches Minecraft, saves personal waypoints, and displays an external overlay using manual coordinates.
+- Switches in the companion are preference flags; they do not affect Minecraft.
+- No SparkVisuals integrated client APK exists.
+- The previous `SparkVisualsNative/` in-process mod scaffold and host-test workflow were deleted 2026-11-25. They were not a standalone client and contradicted the restrictions.
 
-## API and technical limits
-- Official Minecraft Creator APIs are content/pack-based and excluded.
-- LeviLauncher Mod Menu public API can draw a cosmetic overlay, but does not provide a verified public live-game-state API. Native mod loading is not the standalone/no-separate-module route requested.
-- BedrockTools and other native mods may read game data through version-specific hooks/signatures/offsets; those mechanisms are excluded from implementation.
-- Android system overlays are external to Minecraft and are not an acceptable substitute.
+## Candidate scan
+- **Acacia viewer (MIT):** https://github.com/acacia-rs/acacia — Rust workspace contains protocol/network, world state, wgpu renderer, HUD/menu UI, and an interactive Bedrock viewer/client-like app using winit 0.30 and wgpu 30. Target 1.26.51/protocol 2193, same stable wire protocol number as 1.26.50; exact 1.26.50.4 compatibility is not verified. No Android build/APK/device evidence. Renderer fetches/bakes vanilla resource-pack assets, so strict no-resource-pack policy disqualifies it unless clarified. Highest architecture candidate; research only.
+- **Cinnabar:** https://github.com/cinnabar-mc/cinnabar — independent Bedrock client with experimental Android APK, but target 1.26.60/protocol 2225; PolyForm Noncommercial and EULA-gated vanilla resource assets. Version and asset-policy mismatch.
+- **Zuri:** https://github.com/zuri-mc/zuri — MIT, incomplete Bedrock client; Android target/build and exact protocol are not documented.
+- **CaramelClient:** https://github.com/ChimeraAnt-DEV/CaramelClient — Apache-2.0 Android launcher that imports the official game APK and loads native mods; not its own game engine and excluded.
+- **Limerence/Selaura:** https://github.com/LimerenceMC/client — GPL-3.0 Bedrock modification framework; Android support listed, but in-process client modification path excluded.
+- **BedrockTools:** https://github.com/QYCottage/BedrockTools — real native Android in-game HUD/mod, but requires a mod loader/process modification and separate .levipack; excluded. Upstream license statements conflict (GPL-3.0 README vs MIT repository metadata/LICENSE), so no source reuse.
 
-## Current status
-- Companion APK builds; its overlay is outside Minecraft and reads only manually saved local coordinates/markers.
-- Native core (settings/waypoints) and host tests exist; source has a cosmetic Mod Menu draw-command prototype. Native SDK build and in-game runtime are not verified.
-- No native mod package is generated or accepted as the deliverable. No SparkVisuals integrated client APK exists.
+## Feasibility boundary
+Official Bedrock Android does not provide a verified public API here for a separate app to read live world/player state and draw an in-game HUD. Native-loader paths examined modify the game process and are excluded. A standalone reimplementation is a different project: network protocol, world state, renderer, controls, assets, auth, and Android packaging. No candidate has been ported or tested on Android for this project.
 
-## Safe work scope
-Standalone UI/config, personal waypoint storage and harmless UI only. No injection, hooks, signature scans, patches, protection bypass, game-state item/entity detection, projectile prediction, or gameplay automation.
+## Next research
+1. Verify upstream Android portability at a high level for Acacia's winit/wgpu viewer (no fork/build until constraints clear).
+2. Confirm exact protocol/registry/content compatibility for 1.26.50.4 vs Acacia 1.26.51.
+3. Resolve whether the user’s strict resource-pack ban also excludes the vanilla base textures required by a renderer; do not assume permission.
+4. If no candidate satisfies the constraints, report the incompatibility rather than produce a fake client.
 
 ## Release gate
-Never label a shell, companion, native scaffold, or package as the client. A client milestone requires integrated launch, exact game version/device test, and demonstrated functionality.
-
-
-## Cinnabar Android candidate — research only (2026-11-23)
-- Cinnabar is a newly verified independent Bedrock client with experimental Android arm64-v8a APK packaging and nightly/beta APK releases. It is a standalone Rust client with a Go network/auth core; no injection into the official Minecraft process.
-- The inspected v0.2.1 target is 1.26.60 / protocol 2225; SparkVisuals target is 1.26.50.4 / 1.26.50 family protocol 2193. No backwards compatibility is established.
-- License is PolyForm Noncommercial 1.0.0; personal hobby use is permitted, commercial use is not. First-run preparation downloads Mojang's vanilla sample resource pack after EULA acceptance; a literal ban on any resource-pack source would exclude this candidate.
-- Its WASM mod SDK exposes local player/world observations and HUD/world drawing, but imported modules are separate packages and excluded. A future fork would need built-in SparkVisuals modules in client source. No code was copied or forked.
-- Full assessment: [CINNABAR_ANDROID_CANDIDATE.md](CINNABAR_ANDROID_CANDIDATE.md). Research only; no exact-version/device proof.
+An integrated client milestone requires a standalone APK, exact target-version/device test, and demonstrated rendering/input/network functionality. A companion, external overlay, native loader scaffold, or untested APK is not a client.
