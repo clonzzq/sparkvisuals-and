@@ -3,7 +3,7 @@
 This checklist applies only to `SparkVisualsApp/`, not an integrated client.
 
 ## Verified build
-- GitHub Actions run #13 (2026-11-21): successful Android debug APK build, artifact `SparkVisuals-debug-apk`.
+- GitHub Actions run #13 (2026-11-21): successful Android debug APK build, artifact `SparkVisuals-Android-prototype` (the contained APK is `SparkVisuals-debug-apk`).
 - Source app has not changed since that successful run. Documentation cleanup did not alter Kotlin/Gradle source. A new build was not triggered in this run.
 - Artifact link: https://github.com/clonzzq/sparkvisuals-and/actions/runs/44899111516 (retention may expire).
 
