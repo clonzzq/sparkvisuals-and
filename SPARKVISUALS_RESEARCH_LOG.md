@@ -75,3 +75,10 @@ Sources: https://levimc.org/faq/play/android/usage/ ; https://levimc.org/LeviLau
 - Kotlin companion source is unchanged. Android prototype run #13 (2026-11-21) remains the last verified successful APK build; no new APK/build/test was performed today.
 - Current conclusion: Acacia is the most promising architecture research candidate but remains disqualified under the strict resource-pack rule and has no Android evidence. No integrated SparkVisuals APK.
 - Sources: https://github.com/acacia-rs/acacia ; https://github.com/acacia-rs/acacia/blob/master/crates/acacia-viewer/src/main.rs ; https://github.com/acacia-rs/acacia/blob/master/crates/acacia-viewer/Cargo.toml ; https://github.com/acacia-rs/acacia/blob/master/crates/acacia-render/README.md ; https://github.com/acacia-rs/acacia/blob/master/crates/acacia-ui/README.md ; https://mojang.github.io/bedrock-protocol-docs/1.26.50/ ; https://github.com/cinnabar-mc/cinnabar ; https://github.com/zuri-mc/zuri ; https://github.com/ChimeraAnt-DEV/CaramelClient ; https://github.com/LimerenceMC/client ; https://github.com/QYCottage/BedrockTools
+
+
+## 2026-11-25 — Android portability of Acacia's graphics/window stack
+- Fresh official upstream docs confirm **winit 0.30** has an Android backend using android-activity 0.6 glue; **wgpu 30** lists Vulkan as first-class on Linux/Android and GLES as best-effort. Android Vulkan availability varies by device/driver.
+- This supports a possible port at the library/platform level only. Acacia viewer itself has no Android entrypoint, Gradle/APK packaging, Android lifecycle/input integration or device build in its repository. No compile or port was attempted.
+- The strict vanilla-resource-pack requirement remains a disqualifier for Acacia renderer assets. No source code copied.
+- Sources: https://docs.rs/winit/latest/winit/platform/android/ ; https://docs.rs/crate/wgpu/latest ; https://developer.android.com/games/develop/vulkan/native-engine-support
