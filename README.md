@@ -1,31 +1,31 @@
 # SparkVisuals Android — development repository
 
-**Target game:** Minecraft Bedrock Android 1.26.50.4  
-**User requirement:** actual integrated client, not companion app; no Resource Packs, Behavior Packs, Creator Add-ons, separately imported native-mod packages, or code injection/hooks.
+**Target:** Minecraft Bedrock Android 1.26.50.4  
+**Hard constraints:** no Resource Packs, Behavior Packs, Creator Add-ons, separately imported native-mod packages, process injection/hooks, patches, or protection bypass.
 
 ## Honest status
-- `SparkVisualsApp/` is a standalone Android companion/UI prototype. It can launch Minecraft and show a draggable external preview overlay. Its FPS/coordinates are placeholders/manual values; it does not read game state or draw inside Minecraft.
-- `SparkVisualsNative/` is experimental native source and testable settings/waypoint core. Source contains a cosmetic status-panel draw-command call through the documented LeviLauncher Mod Menu API, but native SDK build and in-game rendering are unverified. It is not the requested standalone client.
-- LeviLauncher/Preloader documentation confirms cosmetic HUD draw commands and HUD-editor API, but that route still requires native-module loading/separate package and does not expose verified live game telemetry; it is excluded by the user's constraints.
-- No SparkVisuals in-game client APK exists. No module is claimed to work in-game.
+- `SparkVisualsApp/` is a companion prototype. It launches the official Minecraft app, stores personal waypoints locally, and offers an external Android overlay with manually entered coordinates and nearest-waypoint distance.
+- HUD/module switches are saved preferences only; they do not render inside Minecraft or read game state.
+- **No integrated SparkVisuals client APK exists.** The previous in-process native-mod scaffold and its package/test workflow were removed on 2026-11-25 because they violated the project constraints and were not a standalone client.
+- No feature is represented as working in-game without exact-version/device proof.
 
 ## Repository
-- Android prototype: `SparkVisualsApp/`
-- Experimental native source and host tests: `SparkVisualsNative/`
-- Android prototype CI: `.github/workflows/android-apk.yml`
-- Native core tests: `.github/workflows/native-core-tests.yml`
+- Companion prototype: `SparkVisualsApp/`
+- Android prototype build: `.github/workflows/android-apk.yml` and `.github/workflows/sparkvisuals-android.yml`
+- No native-mod package or native-loader integration workflow remains.
 
 ## Research
 - [Client architecture and feasibility](CLIENT_ARCHITECTURE.md)
-- [Native integration research](NATIVE_INTEGRATION_RESEARCH.md)
-- [Native client roadmap](SPARKVISUALS_NATIVE_ROADMAP.md)
-- [On-device test checklist](NATIVE_TESTING.md)
+- [Excluded in-process integration research](NATIVE_INTEGRATION_RESEARCH.md)
+- [Standalone-client roadmap](SPARKVISUALS_CLIENT_ROADMAP.md)
+- [Companion prototype test checklist](ANDROID_PROTOTYPE_TESTING.md)
 - [Android feasibility research](SPARKVISUALS_ANDROID_FEASIBILITY_2026-11-19.md)
 - [Research log](SPARKVISUALS_RESEARCH_LOG.md)
-- [Cinnabar Android candidate assessment](CINNABAR_ANDROID_CANDIDATE.md) — standalone Android client candidate, but target-version/license/asset-policy gaps remain
-- [Zuri Android portability assessment](ZURI_ANDROID_CANDIDATE.md) — MIT/Bevy client, incomplete and Android target not verified
+- [Cinnabar assessment](CINNABAR_ANDROID_CANDIDATE.md)
+- [Zuri assessment](ZURI_ANDROID_CANDIDATE.md)
+- [Acacia viewer Android assessment](ACACIA_VIEWER_ANDROID_CANDIDATE.md) — new MIT, protocol 2193 full viewer candidate; no Android build evidence, vanilla asset packs required
 
-## Scope
-Standalone cosmetic UI/configuration and personal waypoint storage only. No game-state item/entity detection, projectile prediction, competitive helpers, gameplay automation, undocumented hooks, process injection, signature scanning, patches, or protection bypass.
+## Safe scope
+Only companion UI/configuration, local personal waypoint storage, backups and harmless standalone UI. No live game telemetry, item/entity detection, projectile prediction, gameplay automation, or client integration via unsupported process modification.
 
-A feature may be called functional only after it is built and demonstrated on the exact Minecraft version/device. Do not publish a prototype, companion, or native-loader scaffold as a client.
+A prototype/companion/external overlay is never labelled as the integrated client.
