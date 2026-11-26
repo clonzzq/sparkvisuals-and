@@ -171,7 +171,7 @@ pub fn decode_open_connection_reply_2(packet: &[u8]) -> Result<OpenConnectionRep
     if packet.len() < 1 + 8 + 1 { return Err(PacketError::TooShort); }
     if packet[0] != 0x08 { return Err(PacketError::UnexpectedPacketId); }
     let guid = i64::from_be_bytes(packet[1..9].try_into().unwrap());
-    let addr_len = match packet[9] { 4 => 7, 6 => 29, _ => return Err(PacketError::TooShort) };
+    let addr_len = match packet[9] { 4 => 7, 6 => 27, _ => return Err(PacketError::TooShort) };
     let mtu_offset = 9 + addr_len;
     if packet.len() < mtu_offset + 3 { return Err(PacketError::TooShort); }
     Ok(OpenConnectionReply2 {
