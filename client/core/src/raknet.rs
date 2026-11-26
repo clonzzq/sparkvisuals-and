@@ -161,3 +161,35 @@ mod handshake_packet_tests {
         assert_eq!(&p[26..34], &42i64.to_be_bytes());
     }
 }
+
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct OpenConnectionReply2 { pub server_guid: i64, pub mtu: u16, pub security_enabled: bool }
+
+/// Decode Reply 2 packet, skipping the encoded client address field.
+pub fn decode_open_connection_reply_2(packet: &[u8]) -> Result<OpenConnectionReply2, PacketError> {
+    if packet.len() < 1 + 8 + 1 { return Err(PacketError::TooShort); }
+    if packet[0] != 0x08 { return Err(PacketError::UnexpectedPacketId); }
+    let guid = i64::from_be_bytes(packet[1..9].try_into().unwrap());
+    let addr_len = match packet[9] { 4 => 7, 6 => 29, _ => return Err(PacketError::TooShort) };
+    let mtu_offset = 9 + addr_len;
+    if packet.len() < mtu_offset + 3 { return Err(PacketError::TooShort); }
+    Ok(OpenConnectionReply2 {
+        server_guid: guid,
+        mtu: u16::from_be_bytes(packet[mtu_offset..mtu_offset+2].try_into().unwrap()),
+        security_enabled: packet[mtu_offset+2] != 0,
+    })
+}
+
+#[cfg(test)]
+mod reply2_tests {
+    use super::*;
+    #[test]
+    fn reply2_parses_ipv4_layout() {
+        let mut p=vec![8];
+        p.extend_from_slice(&99i64.to_be_bytes());
+        p.push(4); p.extend_from_slice(&[!127,!0,!0,!1]); p.extend_from_slice(&19132u16.to_be_bytes());
+        p.extend_from_slice(&1200u16.to_be_bytes()); p.push(0);
+        assert_eq!(decode_open_connection_reply_2(&p), Ok(OpenConnectionReply2 {server_guid:99,mtu:1200,security_enabled:false}));
+    }
+}
