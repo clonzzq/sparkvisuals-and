@@ -1,3 +1,5 @@
+pub mod raknet;
+
 //! SparkVisuals standalone Bedrock client core.
 //! This crate is deliberately honest about its current milestone: it contains
 //! version identity and lifecycle state only. Networking, world decoding,
