@@ -23,7 +23,8 @@
 - [Research log](SPARKVISUALS_RESEARCH_LOG.md)
 - [Cinnabar assessment](CINNABAR_ANDROID_CANDIDATE.md)
 - [Zuri assessment](ZURI_ANDROID_CANDIDATE.md)
-- [Acacia viewer Android assessment](ACACIA_VIEWER_ANDROID_CANDIDATE.md) — new MIT, protocol 2193 full viewer candidate; no Android build evidence, vanilla asset packs required
+- [Acacia viewer Android assessment](ACACIA_VIEWER_ANDROID_CANDIDATE.md) — MIT, protocol 2193; Android build unverified; vanilla assets required
+- [Limonite + bedrock-rs assessment](LIMONITE_BEDROCK_RS_RESEARCH_2026-11-26.md) — real clean-room Bedrock client/protocol toolkit, but no Android port and asset requirement conflicts with the strict no-pack rule
 
 ## Safe scope
 Only companion UI/configuration, local personal waypoint storage, backups and harmless standalone UI. No live game telemetry, item/entity detection, projectile prediction, gameplay automation, or client integration via unsupported process modification.
