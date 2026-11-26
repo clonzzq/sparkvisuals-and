@@ -1,21 +1,20 @@
-# SparkVisuals Android app (prototype)
+# SparkVisuals Android companion (0.2.0)
 
-Standalone Kotlin companion application. **Not an integrated Minecraft client.**
+A standalone Android companion app for Minecraft Bedrock. This repository is actively used for the prototype; APKs are built by GitHub Actions.
 
-## Included
-- Black/crimson dashboard and visual-settings screens.
-- Play button launches the official Minecraft Bedrock Android package, if installed.
-- HUD preference switches saved locally. They are preferences only and do not render in Minecraft.
-- Personal waypoint list with name, X/Y/Z, color, enable/disable, edit/delete and local persistence.
-- Manual current X/Y/Z input and horizontal (X/Z) distance calculation to saved waypoints.
-- Optional draggable Android system overlay (permission required) showing manually entered coordinates and nearest enabled waypoint distance. It is outside Minecraft and never reads live game data.
+## Current functionality
+- Dark crimson dashboard and settings.
+- Launch the official installed Minecraft Bedrock app.
+- HUD preference toggles saved on device (configuration flags only).
+- Waypoints: add/edit/delete, choose color, toggle enabled, store X/Y/Z locally.
+- Enter a current position manually and calculate horizontal X/Z distance to saved waypoints.
+- Android floating overlay: draggable panel shows manually entered coordinates and distance to the nearest enabled waypoint.
+- Android 13 (API 33)+.
 
-## Build APK
-GitHub Actions: https://github.com/clonzzq/sparkvisuals-and/actions
+## Build
+Open [GitHub Actions](https://github.com/clonzzq/sparkvisuals-and/actions), run or wait for **Build SparkVisuals Android prototype**, then download the APK artifact. The workflow runs `gradle clean assembleDebug` in `SparkVisualsApp` and verifies the APK exists before uploading.
 
-The APK is a companion prototype, not the requested in-game client. Installing it cannot activate SparkVisuals modules in Minecraft.
+## Important integration note
+This is an external companion and system overlay, not an integrated in-game client. It does not read Minecraft memory, game state, or live coordinates. HUD toggles are saved preferences and are not rendered inside Minecraft. No injection, hooking, patching, or game-process modification is used.
 
-## Hard integration limitation
-This project deliberately does not use Resource Packs, Behavior Packs, Creator Add-ons, separately imported native-mod packages, process injection, hooks, patches, or game protection bypass. No public supported API has been verified here that lets this independent APK read Minecraft's live world/player state or render a custom in-game HUD. Therefore game-data-dependent features are not implemented.
-
-**Target:** Minecraft Bedrock Android 1.26.50.4. Exact device/version integration is unverified.
+Target game version noted in research: Bedrock Android 1.26.50.4; exact compatibility/integration is not claimed.
