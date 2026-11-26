@@ -12,7 +12,7 @@ pub const TARGET_PROTOCOL: u32 = 2193;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ClientState { Idle, Connecting, Connected, Disconnected }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ClientEvent { BeginConnect, ConnectionEstablished, ConnectionFailed, Disconnect }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
