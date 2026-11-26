@@ -15,3 +15,9 @@
 
 ## Conclusion
 No implementation of in-process hooks, signatures, offsets, patches, process injection, anti-cheat/protection bypass, or gameplay-advantage modules will be developed. Research may compare independent client architectures and licenses at a high level. No integrated client APK exists.
+
+
+## 2026-11-26 candidate scan
+- Lua Client Mobile v0.1.2 is a launcher/overlay fork with limited target notes for 1.26.45.x, not verified for 1.26.50.4; it does not provide an allowed integrated-game telemetry/render API. Excluded.
+- Conduit Client is a Windows GDK DLL-based JSON UI tool, targets later 1.26.60.x builds, and requires DLL injection; excluded.
+- Mojang Script API HUD visibility controls and JSON UI sample are content/pack paths, not a permitted stand-alone Android custom-HUD API.
