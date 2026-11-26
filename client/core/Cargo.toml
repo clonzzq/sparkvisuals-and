@@ -1,0 +1,9 @@
+[package]
+name = "sparkvisuals-client-core"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+description = "Clean-room standalone SparkVisuals Bedrock client core"
+
+[lib]
+path = "src/lib.rs"
