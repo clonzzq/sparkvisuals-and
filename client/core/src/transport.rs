@@ -44,7 +44,34 @@ impl RakNetUdp {
         Ok(decode_unconnected_pong(&buf[..size])?)
     }
 
-    /// Send Open Connection Request 1. A response receiver/Request 2 stage is not implemented.
+    /// Performs RakNet's offline Open Connection Request 1 / Reply 1 / Request 2 / Reply 2 exchange.
+    /// Security-enabled servers are rejected because secure RakNet is not implemented.
+    pub fn connect_offline(&self, mtu: usize, client_guid: i64) -> Result<u16, TransportError> {
+        use crate::raknet::{decode_open_connection_reply_1, decode_open_connection_reply_2, encode_open_connection_request_2};
+        let request1 = encode_open_connection_request_1(mtu)?;
+        self.socket.send_to(&request1, self.server)?;
+        let mut buf = [0u8; 2048];
+        let (size, source) = self.socket.recv_from(&mut buf)?;
+        if source != self.server {
+            return Err(TransportError::UnexpectedSource { expected: self.server, actual: source });
+        }
+        let reply1 = decode_open_connection_reply_1(&buf[..size])?;
+        if reply1.security_enabled { return Err(TransportError::Packet(PacketError::UnexpectedPacketId)); }
+        let negotiated_mtu = reply1.mtu.min(mtu as u16);
+        let request2 = encode_open_connection_request_2(self.server, negotiated_mtu, client_guid);
+        self.socket.send_to(&request2, self.server)?;
+        let (size, source) = self.socket.recv_from(&mut buf)?;
+        if source != self.server {
+            return Err(TransportError::UnexpectedSource { expected: self.server, actual: source });
+        }
+        let reply2 = decode_open_connection_reply_2(&buf[..size])?;
+        if reply2.security_enabled || reply2.server_guid != reply1.server_guid {
+            return Err(TransportError::Packet(PacketError::UnexpectedPacketId));
+        }
+        Ok(reply2.mtu)
+    }
+
+    /// Send Open Connection Request 1 only; use connect_offline for the two-stage handshake.
     pub fn send_open_connection_request_1(&self, mtu: usize) -> Result<usize, TransportError> {
         let packet = encode_open_connection_request_1(mtu)?;
         Ok(self.socket.send_to(&packet, self.server)?)
