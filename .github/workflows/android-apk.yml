@@ -1,4 +1,4 @@
-name: Build SparkVisuals Android prototype
+name: Build SparkVisuals Android companion APK
 
 on:
   workflow_dispatch:
@@ -35,23 +35,23 @@ jobs:
         run: |
           sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Build checked-in Android project
+      - name: Build debug APK
         working-directory: SparkVisualsApp
         run: gradle --no-daemon clean assembleDebug
 
-      - name: Verify APK output
+      - name: Verify and checksum APK
         run: |
           set -euo pipefail
           APK="SparkVisualsApp/app/build/outputs/apk/debug/app-debug.apk"
           test -s "$APK"
           mkdir -p dist
-          cp "$APK" dist/SparkVisuals-debug.apk
-          sha256sum dist/SparkVisuals-debug.apk
+          cp "$APK" dist/SparkVisuals-0.2.0-debug.apk
+          sha256sum dist/SparkVisuals-0.2.0-debug.apk
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SparkVisuals-Android-prototype
-          path: dist/SparkVisuals-debug.apk
+          name: SparkVisuals-0.2.0-debug
+          path: dist/SparkVisuals-0.2.0-debug.apk
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 14
