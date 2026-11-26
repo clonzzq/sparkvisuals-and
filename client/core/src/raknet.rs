@@ -88,3 +88,76 @@ mod tests {
         assert_eq!(encode_open_connection_request_1(1500), Err(PacketError::InvalidMtu));
     }
 }
+
+
+/// RakNet Open Connection Reply 1 decoded fields.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct OpenConnectionReply1 {
+    pub server_guid: i64,
+    pub mtu: u16,
+    pub security_enabled: bool,
+}
+
+/// Decode Reply 1 (ID 0x06) and validate its magic.
+pub fn decode_open_connection_reply_1(packet: &[u8]) -> Result<OpenConnectionReply1, PacketError> {
+    if packet.len() < 1 + 8 + 16 + 1 + 2 { return Err(PacketError::TooShort); }
+    if packet[0] != 0x06 { return Err(PacketError::UnexpectedPacketId); }
+    if packet[9..25] != MAGIC { return Err(PacketError::InvalidMagic); }
+    Ok(OpenConnectionReply1 {
+        server_guid: i64::from_be_bytes(packet[1..9].try_into().unwrap()),
+        security_enabled: packet[25] != 0,
+        mtu: u16::from_be_bytes(packet[26..28].try_into().unwrap()),
+    })
+}
+
+/// Encode Request 2 (ID 0x07) for a server endpoint and client GUID.
+pub fn encode_open_connection_request_2(server: std::net::SocketAddr, mtu: u16, client_guid: i64) -> Vec<u8> {
+    let mut out = Vec::with_capacity(1 + 16 + 19 + 2 + 8);
+    out.push(0x07);
+    out.extend_from_slice(&MAGIC);
+    match server {
+        std::net::SocketAddr::V4(addr) => {
+            out.push(4);
+            for octet in addr.ip().octets() { out.push(!octet); }
+            out.extend_from_slice(&addr.port().to_be_bytes());
+        }
+        std::net::SocketAddr::V6(addr) => {
+            out.push(6);
+            out.extend_from_slice(&addr.ip().octets());
+            out.extend_from_slice(&addr.port().to_be_bytes());
+            out.extend_from_slice(&addr.flowinfo().to_be_bytes());
+            out.extend_from_slice(&addr.scope_id().to_be_bytes());
+        }
+    }
+    out.extend_from_slice(&mtu.to_be_bytes());
+    out.extend_from_slice(&client_guid.to_be_bytes());
+    out
+}
+
+#[cfg(test)]
+mod handshake_packet_tests {
+    use super::*;
+    #[test]
+    fn reply1_decodes_and_checks_magic() {
+        let mut p = vec![0x06];
+        p.extend_from_slice(&(-10i64).to_be_bytes());
+        p.extend_from_slice(&MAGIC);
+        p.push(0);
+        p.extend_from_slice(&1200u16.to_be_bytes());
+        assert_eq!(decode_open_connection_reply_1(&p), Ok(OpenConnectionReply1 { server_guid:-10, mtu:1200, security_enabled:false }));
+        p[10] ^= 1;
+        assert_eq!(decode_open_connection_reply_1(&p), Err(PacketError::InvalidMagic));
+    }
+    #[test]
+    fn request2_ipv4_encodes_endpoint_and_guid() {
+        let addr: std::net::SocketAddr = "127.0.0.1:19132".parse().unwrap();
+        let p = encode_open_connection_request_2(addr, 1200, 42);
+        assert_eq!(p[0], 0x07);
+        assert_eq!(&p[1..17], &MAGIC);
+        assert_eq!(p[17], 4);
+        assert_eq!(&p[18..22], &[!127, !0, !0, !1]);
+        assert_eq!(&p[22..24], &19132u16.to_be_bytes());
+        assert_eq!(&p[24..26], &1200u16.to_be_bytes());
+        assert_eq!(&p[26..34], &42i64.to_be_bytes());
+    }
+}
