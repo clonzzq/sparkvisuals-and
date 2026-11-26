@@ -7,7 +7,8 @@ This is the standalone-client codebase, separate from the Android companion.
 - [x] Target identity: Bedrock Android 1.26.50.4
 - [x] Protocol family constant 2193 (hotfix compatibility not claimed)
 - [x] Typed lifecycle state machine and unit tests
-- [ ] RakNet transport and handshake
+- [x] Initial RakNet offline ping / pong decoder and Open Connection Request 1 packet encoder (unit tests written; execution pending)
+- [ ] UDP socket transport, retries, and handshake completion
 - [ ] Bedrock login/authentication
 - [ ] Packet codecs and version audit
 - [ ] World state/chunk decoding
