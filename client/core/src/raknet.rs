@@ -112,7 +112,8 @@ pub fn decode_open_connection_reply_1(packet: &[u8]) -> Result<OpenConnectionRep
 
 /// Encode Request 2 (ID 0x07) for a server endpoint and client GUID.
 pub fn encode_open_connection_request_2(server: std::net::SocketAddr, mtu: u16, client_guid: i64) -> Vec<u8> {
-    let mut out = Vec::with_capacity(1 + 16 + 19 + 2 + 8);
+    let address_len = if server.is_ipv4() { 7 } else { 27 };
+    let mut out = Vec::with_capacity(1 + 16 + address_len + 2 + 8);
     out.push(0x07);
     out.extend_from_slice(&MAGIC);
     match server {
@@ -160,6 +161,20 @@ mod handshake_packet_tests {
         assert_eq!(&p[24..26], &1200u16.to_be_bytes());
         assert_eq!(&p[26..34], &42i64.to_be_bytes());
     }
+    #[test]
+    fn request2_ipv6_encodes_endpoint_and_guid() {
+        let addr: std::net::SocketAddr = "[2001:db8::1]:19132".parse().unwrap();
+        let p = encode_open_connection_request_2(addr, 1400, 99);
+        assert_eq!(p.len(), 54);
+        assert_eq!(p[0], 0x07);
+        assert_eq!(&p[1..17], &MAGIC);
+        assert_eq!(p[17], 6);
+        assert_eq!(&p[18..34], &addr.ip().to_string().parse::<std::net::Ipv6Addr>().unwrap().octets());
+        assert_eq!(&p[34..36], &19132u16.to_be_bytes());
+        assert_eq!(&p[44..46], &1400u16.to_be_bytes());
+        assert_eq!(&p[46..54], &99i64.to_be_bytes());
+    }
+
 }
 
 
@@ -192,4 +207,19 @@ mod reply2_tests {
         p.extend_from_slice(&1200u16.to_be_bytes()); p.push(0);
         assert_eq!(decode_open_connection_reply_2(&p), Ok(OpenConnectionReply2 {server_guid:99,mtu:1200,security_enabled:false}));
     }
+    #[test]
+    fn reply2_parses_ipv6_layout() {
+        let mut p = vec![8];
+        p.extend_from_slice(&101i64.to_be_bytes());
+        p.push(6);
+        p.extend_from_slice(&std::net::Ipv6Addr::LOCALHOST.octets());
+        p.extend_from_slice(&19132u16.to_be_bytes());
+        p.extend_from_slice(&0u32.to_be_bytes()); // flowinfo
+        p.extend_from_slice(&0u32.to_be_bytes()); // scope id
+        p.extend_from_slice(&1280u16.to_be_bytes());
+        p.push(0);
+        assert_eq!(p.len(), 39);
+        assert_eq!(decode_open_connection_reply_2(&p), Ok(OpenConnectionReply2 {server_guid:101,mtu:1280,security_enabled:false}));
+    }
+
 }
