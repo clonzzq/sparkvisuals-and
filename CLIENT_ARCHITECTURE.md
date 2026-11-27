@@ -7,7 +7,7 @@ A real standalone Android client for Bedrock 1.26.50.4, not a companion/launcher
 - `SparkVisualsApp/` is a companion prototype only. It launches Minecraft, saves personal waypoints, and displays an external overlay using manual coordinates.
 - Switches in the companion are preference flags; they do not affect Minecraft.
 - No SparkVisuals integrated client APK exists.
-- Separate clean-room Rust core exists at `client/core/`: lifecycle, RakNet ping/pong and offline Open Connection exchange only. GitHub Actions run #15 passed 15/15 host tests, including loopback mocks; no real-server/device validation. It still has no reliability layer, login/authentication, world decoder, renderer, touch UI or Android packaging.
+- Separate clean-room Rust core exists at `client/core/`: lifecycle, RakNet ping/pong and offline Open Connection exchange only. GitHub Actions run #18 passed 18/18 host tests, including IPv4/IPv6 codec checks and loopback mocks; no real-server/device validation. It still has no reliability layer, login/authentication, world decoder, renderer, touch UI or Android packaging.
 - The previous `SparkVisualsNative/` in-process mod scaffold and host-test workflow were deleted 2026-11-25. They were not a standalone client and contradicted the restrictions.
 
 ## Candidate scan
