@@ -8,7 +8,8 @@ Independent client source, separate from the companion app.
 - [x] Lifecycle state machine
 - [x] RakNet offline ping/pong codecs
 - [x] Open Connection Request 1 / Reply 1 and Request 2 / Reply 2 packet codecs
-- [x] UDP transport for ping and two-stage offline RakNet connection exchange (tests authored; execution pending)
+- [x] UDP transport for ping and two-stage offline RakNet connection exchange
+- [x] CI host tests: 15/15 passed (local mock UDP peer only; no real server/device test)
 - [ ] RakNet reliability layer and retransmission/recovery
 - [ ] Bedrock login/authentication
 - [ ] Packet codecs/version audit
@@ -18,4 +19,6 @@ Independent client source, separate from the companion app.
 - [ ] APK build and real server/device test
 
 ## Current limitation
-Handshake source is implemented, but compatibility with actual servers is not verified and the client is not yet a playable client. Secure RakNet is explicitly rejected; reliability, login, world decoding, rendering, and APK packaging are still missing. No packs, add-ons, imported mods, process modification, or injection. Exact hotfix protocol compatibility and allowed renderer asset sourcing remain unverified.
+Handshake source and local mock tests are implemented. GitHub Actions run #15 passed 15/15 host tests, including a mock two-stage RakNet exchange; this is not validation against a real server. The client is not playable. Secure RakNet is explicitly rejected; reliability, login/authentication, world decoding, rendering, touch controls, Android packaging and APK are still missing. No packs, add-ons, imported mods, process modification, or injection. Exact hotfix protocol compatibility and renderer asset sourcing remain unverified.
+
+CI result: https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988447358
