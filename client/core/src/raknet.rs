@@ -16,7 +16,7 @@ pub enum PacketError { TooShort, InvalidMagic, UnexpectedPacketId, InvalidMtu }
 
 /// Create an unconnected ping packet (timestamp + RakNet magic + client GUID).
 pub fn encode_unconnected_ping(timestamp: i64, client_guid: i64) -> Vec<u8> {
-    let mut out = Vec::with_capacity(25);
+    let mut out = Vec::with_capacity(33);
     out.push(ID_UNCONNECTED_PING);
     out.extend_from_slice(&timestamp.to_be_bytes());
     out.extend_from_slice(&MAGIC);
