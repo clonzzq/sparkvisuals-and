@@ -8,13 +8,13 @@ No integrated client APK exists. The current Android APK is a companion prototyp
 - [x] Lifecycle state machine and target version/protocol constants
 - [x] RakNet offline ping/pong packet codecs and UDP ping exchange
 - [x] Offline Open Connection Request 1/Reply 1 and Request 2/Reply 2 codec + UDP exchange
-- [x] Host CI: 15/15 tests pass, including loopback mock peer tests (GitHub Actions run #15)
+- [x] Host CI: 18/18 tests pass, including IPv4/IPv6 codec coverage, family-aware UDP bind, and loopback mock peer tests (GitHub Actions run #18)
 - [ ] Reliability/retransmission, secure transport and login/authentication
 - [ ] Packet registry/version audit, world/chunk state
 - [ ] Renderer, asset policy, Android surface/lifecycle, touch controls
 - [ ] Android APK and exact-version/device/server validation
 
-This is protocol/transport groundwork only; it does not establish a successful real-server connection or playable client. Secure RakNet is currently rejected. [Test run #15](https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988447358).
+This is protocol/transport groundwork only; it does not establish a successful real-server connection or playable client. Secure RakNet is currently rejected. [Test run #15](https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988794133).
 
 ## Research gates
 - [x] Confirm companion-only behavior and state limitations in README.
