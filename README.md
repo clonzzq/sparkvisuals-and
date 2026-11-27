@@ -14,7 +14,7 @@
 - Standalone-client early Rust core: `client/core/` — lifecycle, RakNet ping/pong and offline open-connection handshake only; no authentication, world renderer, touch UI or Android APK yet.
 - Android prototype build: `.github/workflows/android-apk.yml` (companion only)
 - No native-mod package or native-loader integration workflow remains.
-- Standalone core CI: run #15 passed 18/18 host tests (IPv4/IPv6 codecs and local mock UDP peers); this is not real-server or Android/device validation. [Run](https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988794133) · [Client status](client/README.md)
+- Standalone core CI: run #18 passed 18/18 host tests (IPv4/IPv6 codecs and local mock UDP peers); this is not real-server or Android/device validation. [Run](https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988794133) · [Client status](client/README.md)
 
 ## Research
 - [Client architecture and feasibility](CLIENT_ARCHITECTURE.md)
