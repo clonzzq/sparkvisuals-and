@@ -14,7 +14,7 @@ No integrated client APK exists. The current Android APK is a companion prototyp
 - [ ] Renderer, asset policy, Android surface/lifecycle, touch controls
 - [ ] Android APK and exact-version/device/server validation
 
-This is protocol/transport groundwork only; it does not establish a successful real-server connection or playable client. Secure RakNet is currently rejected. [Test run #15](https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988794133).
+This is protocol/transport groundwork only; it does not establish a successful real-server connection or playable client. Secure RakNet is currently rejected. [Test run #18](https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988794133).
 
 ## Research gates
 - [x] Confirm companion-only behavior and state limitations in README.
