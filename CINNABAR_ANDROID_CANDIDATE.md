@@ -47,3 +47,12 @@ Research only. No Cinnabar code, APK, module, or assets have been copied, forked
 Mojang's stable protocol changelog shows that Bedrock 1.26.60 (2225) introduced **64 changes** compared with 1.26.51 (2193): 8 new packets and 56 packet/schema changes. Examples include broad ActorEvent enum renumbering, BuildPlatform/GameType value changes, added passenger-block data in AddActor/AddPlayer, camera-field optionality, environment-attribute schema changes, and a changed sound-event structure. This confirms that moving Cinnabar back to 1.26.50.4 is not a version-string downgrade; protocol/data changes are substantial. This is a changelog-based scope signal, not a full code diff or estimate; no compatibility code was written.
 
 Source: https://mojang.github.io/bedrock-protocol-docs/changelog/ (stable 1.26.60 and 1.26.51 sections)
+
+
+## Status refresh — 2026-11-27
+
+- Latest upstream nightly published 2026-11-26: commit `8ae394f50eb284ec9dea77884f490d4269e8a6a0`. The real Android arm64 APK asset is 93,882,457 bytes; release API SHA-256 is `d392e01cebca0cbad028cf405ee1ddfd70f818e701dbae3850185a721aa3d3b5`. This is upstream artifact metadata, not a device test by SparkVisuals.
+- The current `dev` target manifest is still Bedrock 1.26.60.6 / protocol 2225. The requested 1.26.50.4 belongs to stable protocol 2193. The client is not target-compatible as-is.
+- Current personal-mod docs explicitly describe sandboxed WASM grants for HUD/presentation/world drawing and local-world observations. These are separate imported mod components, not Minecraft resource/behavior packs; still excluded by the user's no-mod-package constraint. Integrating features into a client fork would instead produce a distinct game client, not modify the official Mojang app.
+- Hard blockers unchanged: experimental Android/Vulkan path, no physical-device acceptance, incompatible protocol family, first-run Mojang resource-pack assets (strictly prohibited), and PolyForm Noncommercial 1.0.0 license.
+- Source links: https://github.com/cinnabar-mc/cinnabar/releases/tag/nightly ; https://github.com/cinnabar-mc/cinnabar/blob/dev/assets/bedrock-target.json ; https://github.com/cinnabar-mc/cinnabar/blob/dev/docs/android.md ; https://cinnabar.gg/docs/modding/ ; https://cinnabar.gg/docs/modding/reference/presentation ; https://cinnabar.gg/docs/modding/guides/camera-and-rendering
