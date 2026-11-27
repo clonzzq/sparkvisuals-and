@@ -1,7 +1,7 @@
 //! Minimal UDP transport for the first RakNet discovery packets.
 //! This is not a reliable transport and does not complete the RakNet handshake.
 use std::io;
-use std::net::{SocketAddr, UdpSocket};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, UdpSocket};
 use std::time::Duration;
 
 use crate::raknet::{decode_unconnected_pong, encode_open_connection_request_1, encode_unconnected_ping, PacketError};
@@ -24,7 +24,12 @@ pub struct RakNetUdp {
 impl RakNetUdp {
     /// Bind an ephemeral local UDP port and configure the receive timeout.
     pub fn bind(server: SocketAddr, timeout: Duration) -> io::Result<Self> {
-        let socket = UdpSocket::bind("0.0.0.0:0")?;
+        // Bind to the matching IP family; IPv4-only binding breaks IPv6 server addresses.
+        let bind_addr = match server.ip() {
+            IpAddr::V4(_) => SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), 0),
+            IpAddr::V6(_) => SocketAddr::new(IpAddr::V6(Ipv6Addr::UNSPECIFIED), 0),
+        };
+        let socket = UdpSocket::bind(bind_addr)?;
         socket.set_read_timeout(Some(timeout))?;
         Ok(Self { socket, server })
     }
@@ -83,6 +88,18 @@ mod tests {
     use super::*;
     use crate::raknet::{ID_UNCONNECTED_PING, MAGIC};
     use std::thread;
+
+    #[test]
+    fn bind_uses_server_address_family() {
+        // Skip if the host has IPv6 disabled; this test does not send traffic.
+        let peer = match UdpSocket::bind("[::1]:0") {
+            Ok(peer) => peer,
+            Err(_) => return,
+        };
+        let addr = peer.local_addr().unwrap();
+        let transport = RakNetUdp::bind(addr, Duration::from_millis(100)).unwrap();
+        assert!(transport.local_addr().unwrap().is_ipv6());
+    }
 
     #[test]
     fn ping_sends_packet_and_decodes_mock_pong() {
