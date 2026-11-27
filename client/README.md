@@ -9,7 +9,7 @@ Independent client source, separate from the companion app.
 - [x] RakNet offline ping/pong codecs
 - [x] Open Connection Request 1 / Reply 1 and Request 2 / Reply 2 packet codecs
 - [x] UDP transport for ping and two-stage offline RakNet connection exchange
-- [x] CI host tests: 15/15 passed (local mock UDP peer only; no real server/device test)
+- [x] CI host tests: 18/18 passed, including IPv4/IPv6 codec checks and loopback mock UDP peers (no real server/device test)
 - [ ] RakNet reliability layer and retransmission/recovery
 - [ ] Bedrock login/authentication
 - [ ] Packet codecs/version audit
@@ -19,6 +19,6 @@ Independent client source, separate from the companion app.
 - [ ] APK build and real server/device test
 
 ## Current limitation
-Handshake source and local mock tests are implemented. GitHub Actions run #15 passed 15/15 host tests, including a mock two-stage RakNet exchange; this is not validation against a real server. The client is not playable. Secure RakNet is explicitly rejected; reliability, login/authentication, world decoding, rendering, touch controls, Android packaging and APK are still missing. No packs, add-ons, imported mods, process modification, or injection. Exact hotfix protocol compatibility and renderer asset sourcing remain unverified.
+Handshake source and local mock tests are implemented. GitHub Actions run #18 passed 18/18 host tests, including IPv4/IPv6 codec checks, family-aware socket binding, and mock two-stage RakNet exchange; this is not validation against a real server. The client is not playable. Secure RakNet is explicitly rejected; reliability, login/authentication, world decoding, rendering, touch controls, Android packaging and APK are still missing. No packs, add-ons, imported mods, process modification, or injection. Exact hotfix protocol compatibility and renderer asset sourcing remain unverified.
 
-CI result: https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988447358
+CI result: https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988794133
