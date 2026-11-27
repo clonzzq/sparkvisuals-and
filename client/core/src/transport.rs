@@ -85,21 +85,29 @@ mod tests {
     use std::thread;
 
     #[test]
-    fn ping_sends_packet_to_local_peer() {
+    fn ping_sends_packet_and_decodes_mock_pong() {
         let peer = UdpSocket::bind("127.0.0.1:0").unwrap();
         peer.set_read_timeout(Some(Duration::from_secs(1))).unwrap();
         let addr = peer.local_addr().unwrap();
-        let transport = RakNetUdp::bind(addr, Duration::from_millis(100)).unwrap();
-        let sent = thread::spawn(move || {
+        let transport = RakNetUdp::bind(addr, Duration::from_secs(1)).unwrap();
+        let server = thread::spawn(move || {
             let mut buf = [0u8; 64];
             let (len, source) = peer.recv_from(&mut buf).unwrap();
+            assert_eq!(len, 33);
             assert_eq!(buf[0], ID_UNCONNECTED_PING);
+            assert_eq!(&buf[1..9], &77i64.to_be_bytes());
             assert_eq!(&buf[9..25], &MAGIC);
-            (len, source)
+            assert_eq!(&buf[25..33], &88i64.to_be_bytes());
+
+            let mut pong = vec![0x1c];
+            pong.extend_from_slice(&77i64.to_be_bytes());
+            pong.extend_from_slice(&900i64.to_be_bytes());
+            pong.extend_from_slice(&MAGIC);
+            pong.extend_from_slice(b"mock-motd");
+            peer.send_to(&pong, source).unwrap();
         });
-        transport.socket.send_to(&encode_unconnected_ping(77, 88), addr).unwrap();
-        let (len, _) = sent.join().unwrap();
-        assert_eq!(len, 25);
+        assert_eq!(transport.ping(77, 88).unwrap(), (77, 900, b"mock-motd".to_vec()));
+        server.join().unwrap();
     }
 
     #[test]
@@ -113,5 +121,53 @@ mod tests {
         let (len, _) = peer.recv_from(&mut buf).unwrap();
         assert_eq!(len, 600);
         assert_eq!(buf[0], 0x05);
+    }
+
+    #[test]
+    fn offline_handshake_completes_against_local_mock_peer() {
+        let peer = UdpSocket::bind("127.0.0.1:0").unwrap();
+        peer.set_read_timeout(Some(Duration::from_secs(1))).unwrap();
+        let addr = peer.local_addr().unwrap();
+        let transport = RakNetUdp::bind(addr, Duration::from_secs(1)).unwrap();
+
+        let server = thread::spawn(move || {
+            let mut buf = [0u8; 2048];
+            let (len, client) = peer.recv_from(&mut buf).unwrap();
+            assert_eq!(len, 600);
+            assert_eq!(buf[0], 0x05);
+            assert_eq!(&buf[1..17], &MAGIC);
+
+            let server_guid = 0x1234i64;
+            let mut reply1 = vec![0x06];
+            reply1.extend_from_slice(&server_guid.to_be_bytes());
+            reply1.extend_from_slice(&MAGIC);
+            reply1.push(0); // security disabled
+            reply1.extend_from_slice(&1200u16.to_be_bytes());
+            peer.send_to(&reply1, client).unwrap();
+
+            let (len, client2) = peer.recv_from(&mut buf).unwrap();
+            assert_eq!(client2, client);
+            assert_eq!(len, 34);
+            assert_eq!(buf[0], 0x07);
+            assert_eq!(&buf[1..17], &MAGIC);
+            assert_eq!(buf[17], 4); // IPv4 server address
+            assert_eq!(&buf[24..26], &600u16.to_be_bytes());
+
+            let mut reply2 = vec![0x08];
+            reply2.extend_from_slice(&server_guid.to_be_bytes());
+            reply2.push(4);
+            let client_ip = match client.ip() {
+                std::net::IpAddr::V4(ip) => ip.octets(),
+                std::net::IpAddr::V6(_) => panic!("mock peer expects IPv4"),
+            };
+            reply2.extend(client_ip.map(|octet| !octet));
+            reply2.extend_from_slice(&client.port().to_be_bytes());
+            reply2.extend_from_slice(&600u16.to_be_bytes());
+            reply2.push(0); // security disabled
+            peer.send_to(&reply2, client).unwrap();
+        });
+
+        assert_eq!(transport.connect_offline(600, 77).unwrap(), 600);
+        server.join().unwrap();
     }
 }
