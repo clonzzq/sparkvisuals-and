@@ -11,8 +11,10 @@
 
 ## Repository
 - Companion prototype: `SparkVisualsApp/`
-- Android prototype build: `.github/workflows/android-apk.yml` (single verified workflow)
+- Standalone-client early Rust core: `client/core/` — lifecycle, RakNet ping/pong and offline open-connection handshake only; no authentication, world renderer, touch UI or Android APK yet.
+- Android prototype build: `.github/workflows/android-apk.yml` (companion only)
 - No native-mod package or native-loader integration workflow remains.
+- Standalone core CI: run #15 passed 15/15 host tests using local mock UDP peers; this is not real-server or Android/device validation. [Run](https://github.com/clonzzq/sparkvisuals-and/actions/runs/45988447358) · [Client status](client/README.md)
 
 ## Research
 - [Client architecture and feasibility](CLIENT_ARCHITECTURE.md)
