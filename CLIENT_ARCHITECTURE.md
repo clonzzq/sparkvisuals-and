@@ -7,6 +7,7 @@ A real standalone Android client for Bedrock 1.26.50.4, not a companion/launcher
 - `SparkVisualsApp/` is a companion prototype only. It launches Minecraft, saves personal waypoints, and displays an external overlay using manual coordinates.
 - Switches in the companion are preference flags; they do not affect Minecraft.
 - No SparkVisuals integrated client APK exists.
+- Separate clean-room Rust core exists at `client/core/`: lifecycle, RakNet ping/pong and offline Open Connection exchange only. GitHub Actions run #15 passed 15/15 host tests, including loopback mocks; no real-server/device validation. It still has no reliability layer, login/authentication, world decoder, renderer, touch UI or Android packaging.
 - The previous `SparkVisualsNative/` in-process mod scaffold and host-test workflow were deleted 2026-11-25. They were not a standalone client and contradicted the restrictions.
 
 ## Candidate scan
@@ -16,6 +17,7 @@ A real standalone Android client for Bedrock 1.26.50.4, not a companion/launcher
 - **CaramelClient:** https://github.com/ChimeraAnt-DEV/CaramelClient — Apache-2.0 Android launcher that imports the official game APK and loads native mods; not its own game engine and excluded.
 - **Limerence/Selaura:** https://github.com/LimerenceMC/client — GPL-3.0 Bedrock modification framework; Android support listed, but in-process client modification path excluded.
 - **BedrockTools:** https://github.com/QYCottage/BedrockTools — real native Android in-game HUD/mod, but requires a mod loader/process modification and separate .levipack; excluded. Upstream license statements conflict (GPL-3.0 README vs MIT repository metadata/LICENSE), so no source reuse.
+- **Torch (AGPL-3.0):** https://github.com/torch-client/torch-client — real Rust standalone Android client preview with touch controls and ClickGUI; supported Java Edition versions only (26.1.1/26.2/1.21.11), not Bedrock. Research UI architecture only; no code reuse.
 
 ## Feasibility boundary
 Official Bedrock Android does not provide a verified public API here for a separate app to read live world/player state and draw an in-game HUD. Native-loader paths examined modify the game process and are excluded. A standalone reimplementation is a different project: network protocol, world state, renderer, controls, assets, auth, and Android packaging. No candidate has been ported or tested on Android for this project.
