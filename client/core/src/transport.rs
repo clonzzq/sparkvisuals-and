@@ -11,6 +11,7 @@ pub enum TransportError {
     Io(io::Error),
     Packet(PacketError),
     UnexpectedSource { expected: SocketAddr, actual: SocketAddr },
+    PingTimestampMismatch { expected: i64, actual: i64 },
 }
 
 impl From<io::Error> for TransportError { fn from(value: io::Error) -> Self { Self::Io(value) } }
@@ -46,7 +47,11 @@ impl RakNetUdp {
         if source != self.server {
             return Err(TransportError::UnexpectedSource { expected: self.server, actual: source });
         }
-        Ok(decode_unconnected_pong(&buf[..size])?)
+        let pong = decode_unconnected_pong(&buf[..size])?;
+        if pong.0 != timestamp {
+            return Err(TransportError::PingTimestampMismatch { expected: timestamp, actual: pong.0 });
+        }
+        Ok(pong)
     }
 
     /// Performs RakNet's offline Open Connection Request 1 / Reply 1 / Request 2 / Reply 2 exchange.
@@ -124,6 +129,27 @@ mod tests {
             peer.send_to(&pong, source).unwrap();
         });
         assert_eq!(transport.ping(77, 88).unwrap(), (77, 900, b"mock-motd".to_vec()));
+        server.join().unwrap();
+    }
+
+    #[test]
+    fn ping_rejects_pong_with_unmatched_timestamp() {
+        let peer = UdpSocket::bind("127.0.0.1:0").unwrap();
+        peer.set_read_timeout(Some(Duration::from_secs(1))).unwrap();
+        let addr = peer.local_addr().unwrap();
+        let transport = RakNetUdp::bind(addr, Duration::from_secs(1)).unwrap();
+        let server = thread::spawn(move || {
+            let mut buf = [0u8; 64];
+            let (_, source) = peer.recv_from(&mut buf).unwrap();
+            let mut pong = vec![0x1c];
+            pong.extend_from_slice(&123i64.to_be_bytes()); // deliberately not the ping timestamp
+            pong.extend_from_slice(&900i64.to_be_bytes());
+            pong.extend_from_slice(&MAGIC);
+            pong.extend_from_slice(b"mock-motd");
+            peer.send_to(&pong, source).unwrap();
+        });
+        let result = transport.ping(77, 88);
+        assert!(matches!(result, Err(TransportError::PingTimestampMismatch { expected: 77, actual: 123 })));
         server.join().unwrap();
     }
 
